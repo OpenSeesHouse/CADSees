@@ -137,7 +137,7 @@ BEGIN
             VALUE "FileVersion", "1, 0, 0, 1"
             VALUE "InternalName", "CADSees"
             VALUE "LegalCopyright", "Copyright © 2016"
-            VALUE "OriginalFilename", "CSSCADSees.arx"
+            VALUE "OriginalFilename", "OPSCCADSees.arx"
             VALUE "ProductName", "CADSees Application"
             VALUE "ProductVersion", "1, 0, 0, 1"
         END

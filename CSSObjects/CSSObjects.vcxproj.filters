@@ -25,6 +25,9 @@
     <Filter Include="Cube">
       <UniqueIdentifier>{0f6113a8-cbe2-4e3d-be86-7d4ee8257fdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{3d3116a0-2ea1-4f6e-9130-7bc1ff4596d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp">
@@ -78,6 +81,9 @@
     <ClCompile Include="Cube\CSSCube.cpp">
       <Filter>Cube</Filter>
     </ClCompile>
+    <ClCompile Include="ObjUtils\ObjUtils.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -127,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="Cube\CSSCube.h">
       <Filter>Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjUtils\ObjUtils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

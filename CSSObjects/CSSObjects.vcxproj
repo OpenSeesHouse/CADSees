@@ -54,7 +54,7 @@
   <PropertyGroup />
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Platform)'=='x64'">_ALLOW_RTCc_IN_STL;_WIN64;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(UseOfMfc)'=='Dynamic'">_AFXEXT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <!-- Added to avoid Narrow conversion warnings introduced in VS2015 /Wv:xx[.yy[.zzzzz],  is CL version -->
       <AdditionalOptions>/Wv:17.00.61030 %(AdditionalOptions)</AdditionalOptions>
@@ -87,6 +87,7 @@
     <ClCompile Include="Elements\CSSTruss.cpp" />
     <ClCompile Include="Elements\CSSZeroLength.cpp" />
     <ClCompile Include="Node\CSSNode.cpp" />
+    <ClCompile Include="ObjUtils\ObjUtils.cpp" />
     <ClCompile Include="Recorders\CSSNodeRecorder.cpp" />
     <ClCompile Include="Recorders\CSSRecorder.cpp" />
     <ClCompile Include="StdAfx.cpp">
@@ -107,6 +108,7 @@
     <ClInclude Include="Elements\CSSTruss.h" />
     <ClInclude Include="Elements\CSSZeroLength.h" />
     <ClInclude Include="Node\CSSNode.h" />
+    <ClInclude Include="ObjUtils\ObjUtils.h" />
     <ClInclude Include="Recorders\CSSNodeRecorder.h" />
     <ClInclude Include="Recorders\CSSRecorder.h" />
     <ClInclude Include="Resource.h" />

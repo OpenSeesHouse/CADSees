@@ -39,9 +39,6 @@
     <ClCompile Include="Dialogs\DispOptionsDlg.cpp">
       <Filter>Dialoges</Filter>
     </ClCompile>
-    <ClCompile Include="Dialogs\MainDialogue.cpp">
-      <Filter>Dialoges</Filter>
-    </ClCompile>
     <ClCompile Include="commands\commands.cpp">
       <Filter>commands</Filter>
     </ClCompile>
@@ -60,9 +57,6 @@
       <Filter>Dialoges</Filter>
     </ClInclude>
     <ClInclude Include="Dialogs\DispOptionsDlg.h">
-      <Filter>Dialoges</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialogs\MainDialogue.h">
       <Filter>Dialoges</Filter>
     </ClInclude>
     <ClInclude Include="commands\commands.h">

@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- OPSCNode.h : Declaration of the OPSCNode
+//----- CSSNode.h : Declaration of the CSSNode
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -46,8 +46,8 @@
 #include <vector>
 
 //-----------------------------------------------------------------------------
-class OPSCNode;
-class OPSCLineElement;
+class CSSNode;
+class CSSLineElement;
 class AcDbBlockTableRecord;
 //-----------------------------------------------------------------------------
 class DLLIMPEXP ObjUtils {

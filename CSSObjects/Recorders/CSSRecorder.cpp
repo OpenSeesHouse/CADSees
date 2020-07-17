@@ -182,9 +182,8 @@ bool CSSRecorder::readFileData(AcString filePath, std::string folder, bool hasTi
 			continue;
 		for (int j = 0; j < words.size(); j++)
 		{
-			 std::string str = words[j];
-			 char* valstr = str.c_str();
-			int retCode = _atodbl(&val, valstr);
+			
+			int retCode = _atodbl(&val, (char*)words[j].data());
 			if (retCode !=  0)
 			{
 				acutPrintf(L"CSSRecorder::Failed to convert %s value to double",

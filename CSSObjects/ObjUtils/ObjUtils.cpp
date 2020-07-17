@@ -68,7 +68,7 @@ void ObjUtils::addNode(int tag, AcGePoint3d pnt)
 		return;
 	}
 	int num = getNodesAtCrd(pnt);
-	OPSCNode* pNode = new OPSCNode(tag, DOCDATA.NDOF, pnt, num);
+	CSSNode* pNode = new CSSNode(tag, DOCDATA.NDOF, pnt, num);
 	AcDbBlockTableRecord* pBTR = getModelSpace(OpenMode::kForWrite);
 	assert(pBTR != NULL);
 	pBTR->appendAcDbEntity(id, pNode);
@@ -84,29 +84,29 @@ double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int
 		acutPrintf(_T("Element with tag %d already exists in model"), tag);
 		return 0;
 	}
-	OPSCElement* pEle = 0;
+	CSSElement* pEle = 0;
 	if (type.compare("truss") == 0)
 	{
-		pEle = new OPSCTruss(tag, iNode, jNode, nPnts);
+		pEle = new CSSTruss(tag, iNode, jNode, nPnts);
 	} else if(type.compare("elasticBeamColumn") == 0)
 	{
-		pEle =new OPSCElasticBeamColumn(tag, iNode, jNode, nPnts);
+		pEle =new CSSElasticBeamColumn(tag, iNode, jNode, nPnts);
 		
 	} else if(type.compare("ModElasticBeam2d") == 0 || type.compare("ModElasticBeam3d") == 0)
 	{
-		pEle =new OPSCModElasticBeamColumn(tag, iNode, jNode, nPnts);
+		pEle =new CSSModElasticBeamColumn(tag, iNode, jNode, nPnts);
 		
 	} else if(type.compare("dispBeamColumn") == 0)
 	{
-		pEle =new OPSCDispBeamColumn(tag, iNode, jNode, nPnts);
+		pEle =new CSSDispBeamColumn(tag, iNode, jNode, nPnts);
 		
 	} else if(type.compare("forceBeamColumn") == 0 || type.compare("nonlinearBeamColumn") == 0)
 	{
-		pEle =new OPSCForceBeamColumn(tag, iNode, jNode, nPnts);
+		pEle =new CSSForceBeamColumn(tag, iNode, jNode, nPnts);
 		
 	} else if(type.compare("zeroLength") == 0)
 	{
-		pEle =new OPSCZeroLength(tag, iNode, jNode);
+		pEle =new CSSZeroLength(tag, iNode, jNode);
 		
 	}
 
@@ -116,15 +116,15 @@ double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int
 		delete pEle;
 		return 0;
 	}
-	OPSCLineElement *pLinEle = OPSCLineElement::cast(pEle);
+	CSSLineElement *pLinEle = CSSLineElement::cast(pEle);
 	double l = 0;
 	if (pLinEle != 0)
 	{
 		 l = pLinEle->getLength();
-		//if(OPSCNode::getSize() == 0)
+		//if(CSSNode::getSize() == 0)
 		//{
-		//	OPSCNode::setSize(l*NODSIZERAT);
-		//	OPSCNode::setTagSize(l*NODSIZERAT);
+		//	CSSNode::setSize(l*NODSIZERAT);
+		//	CSSNode::setTagSize(l*NODSIZERAT);
 		//}
 	}
 
@@ -144,7 +144,7 @@ void ObjUtils::addNodeRecorder(int objTag, int dof, std::string path, int dataCo
 		acutPrintf(_T("Element with objTag %d and dof %d already exists in model; ignoring new recorder"), objTag, dof);
 		return;
 	}
-	OPSCNodeRecorder* pRcrdr = new OPSCNodeRecorder(objTag, dof, path, dataCol, hasTime);
+	CSSNodeRecorder* pRcrdr = new CSSNodeRecorder(objTag, dof, path, dataCol, hasTime);
 	 AcDbDictionary *pNamedobj;
     AcDbDictionary *pDict = NULL;
 	AcDbDatabase *pCurDwg = acdbHostApplicationServices()->workingDatabase();
@@ -212,7 +212,7 @@ void ObjUtils::GetAllNodes(std::vector<AcDbObjectId>& resIds)
 		return;
 	}
 	AcDbEntity *pEnt;
-	OPSCNode* pNode;
+	CSSNode* pNode;
 	for(pIter->start(); !pIter->done(); pIter->step())
 	{
 		es = pIter->getEntity(pEnt, kForRead);
@@ -222,7 +222,7 @@ void ObjUtils::GetAllNodes(std::vector<AcDbObjectId>& resIds)
 			return false;*/
 			continue;
 		}
-		pNode = OPSCNode::cast(pEnt);
+		pNode = CSSNode::cast(pEnt);
 		if (pNode == NULL)
 		{
 			es = pEnt->close();
@@ -297,7 +297,7 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resids)
 		return;
 	}
 	AcDbEntity *pEnt;
-	OPSCLineElement* pEle;
+	CSSLineElement* pEle;
 	bool found = false;
 	for(pIter->start(); !pIter->done(); pIter->step())
 	{
@@ -308,7 +308,7 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resids)
 			return;*/
 			continue;
 		}
-		pEle = OPSCLineElement::cast(pEnt);
+		pEle = CSSLineElement::cast(pEnt);
 		if (pEle == NULL)
 		{
 			es = pEnt->close();
@@ -383,7 +383,7 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resids)
 //		return AcDbObjectId::kNull;
 //	}
 //	AcDbEntity *pEnt;
-//	OPSCNode* pNode;
+//	CSSNode* pNode;
 //	id = AcDbObjectId::kNull;
 //	for(pIter->start(); !pIter->done(); pIter->step())
 //	{
@@ -394,7 +394,7 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resids)
 //			return false;*/
 //			continue;
 //		}
-//		pNode = OPSCNode::cast(pEnt);
+//		pNode = CSSNode::cast(pEnt);
 //		if (pNode == NULL)
 //		{
 //			es = pEnt->close();
@@ -441,7 +441,7 @@ void ObjUtils::RedrawNodeGraphics(bool redrawBody)
 		AcDbObject* pObj;
 		es = acdbOpenObject(pObj, resIds[i], kForWrite);
 		assert(pObj != NULL);
-		OPSCNode* pNode = OPSCNode::cast(pObj);
+		CSSNode* pNode = CSSNode::cast(pObj);
 		assert(pNode != NULL);
 		if (redrawBody)
 		{
@@ -463,7 +463,7 @@ void ObjUtils::RedrawElementsGraphics(bool redrawBody)
 		AcDbObject* pObj;
 		ErrorStatus es = acdbOpenObject(pObj, resIds[i], kForWrite);
 		assert(pObj != NULL);
-		OPSCLineElement* pEle = OPSCLineElement::cast(pObj);
+		CSSLineElement* pEle = CSSLineElement::cast(pObj);
 		assert(pEle != NULL);
 		if (redrawBody)
 		{
@@ -532,7 +532,7 @@ bool ObjUtils::getNode(AcDbObjectId* pResId,int tag)
 		return false;
 	}
 	AcDbEntity *pEnt;
-	OPSCNode* pNode;
+	CSSNode* pNode;
 	bool found = false;
 	for(pIter->start(); !pIter->done(); pIter->step())
 	{
@@ -543,7 +543,7 @@ bool ObjUtils::getNode(AcDbObjectId* pResId,int tag)
 			return false;*/
 			continue;
 		}
-		pNode = OPSCNode::cast(pEnt);
+		pNode = CSSNode::cast(pEnt);
 		if (pNode == NULL)
 		{
 			es = pEnt->close();
@@ -637,7 +637,7 @@ bool ObjUtils::getElement(AcDbObjectId* pResId,int tag)
 		return false;
 	}
 	AcDbEntity *pEnt;
-	OPSCLineElement* pEle;
+	CSSLineElement* pEle;
 	bool found = false;
 	for(pIter->start(); !pIter->done(); pIter->step())
 	{
@@ -648,7 +648,7 @@ bool ObjUtils::getElement(AcDbObjectId* pResId,int tag)
 			return false;*/
 			continue;
 		}
-		pEle = OPSCLineElement::cast(pEnt);
+		pEle = CSSLineElement::cast(pEnt);
 		if (pEle == NULL)
 		{
 			es = pEnt->close();
@@ -711,7 +711,7 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
     pNamedobj->close();
 	AcDbDictionaryIterator* pIter = pDict->newIterator();
 	AcDbObject *pObj;
-	OPSCRecorder* pRcrdr;
+	CSSRecorder* pRcrdr;
 	bool found = false;
 	ErrorStatus es;
 	for(; !pIter->done(); pIter->next())
@@ -723,7 +723,7 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 			return false;*/
 			continue;
 		}
-		pRcrdr = OPSCRecorder::cast(pObj);
+		pRcrdr = CSSRecorder::cast(pObj);
 		if (pRcrdr == NULL)
 		{
 			es = pObj->close();
@@ -797,7 +797,7 @@ void ObjUtils::GetAllRecorders(std::vector<AcDbObjectId>& resIds)
     pNamedobj->close();
 	AcDbDictionaryIterator* pIter = pDict->newIterator();
 	AcDbObject *pObj;
-	OPSCRecorder* pRcrdr;
+	CSSRecorder* pRcrdr;
 	bool found = false;
 	ErrorStatus es;
 	for(; !pIter->done(); pIter->next())
@@ -809,7 +809,7 @@ void ObjUtils::GetAllRecorders(std::vector<AcDbObjectId>& resIds)
 			return false;*/
 			continue;
 		}
-		pRcrdr = OPSCRecorder::cast(pObj);
+		pRcrdr = CSSRecorder::cast(pObj);
 		if (pRcrdr == NULL)
 		{
 			acutPrintf(_T("getAllRecorders:: pRcrdr is null"));
@@ -885,7 +885,7 @@ int ObjUtils::getNodesAtCrd(AcGePoint3d pnt)
 	std::vector<AcDbObjectId> resIds;
 	GetAllNodes(resIds);
 	AcTransaction *pTr = acTransactionManagerPtr()->startTransaction();
-	OPSCNode *pNode;
+	CSSNode *pNode;
 	ErrorStatus es;
 	int num = 0;
 	for (int i = 0; i < resIds.size(); i++)
@@ -896,7 +896,7 @@ int ObjUtils::getNodesAtCrd(AcGePoint3d pnt)
 			acedAlert(_T("ObjUtils::getNodesAtCrd- error opening node"));
 			return 0;
 		}
-		pNode = OPSCNode::cast(pNode);
+		pNode = CSSNode::cast(pNode);
 		if (pNode == 0)
 		{
 			acedAlert(_T("ObjUtils::getNodesAtCrd- pNode is null"));

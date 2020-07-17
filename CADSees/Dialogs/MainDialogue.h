@@ -6,7 +6,7 @@
 #include "acui.h"
 #include "afxwin.h"
 #include "afxcmn.h"
-#include "resource.h"
+#include "../resource.h"
 
 class MainDialogue : public CAcUiDialog
 {
