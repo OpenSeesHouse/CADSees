@@ -42,6 +42,14 @@ public:
 		AcRx::AppRetCode retCode =AcRxDbxApp::On_kInitAppMsg (pkt) ;
 		
 		// TODO: Add your initialization code here
+		acutPrintf(_T("\n******CSSObjects.dbx Loaded successfully*****\n"));
+		//acutPrintf(_T("\n******CADSees Program Loaded successfully*****\n"));
+		//acutPrintf(_T("**Developed by Seyed Alireza Jalali\n"));
+		//acutPrintf(_T("**at Civil Soft Science, Tehran, Iran\n"));
+		//acutPrintf(_T("**Description:\n"));
+		//acutPrintf(_T("     A graphical pre/post-processor for OpenSees software:\n"));
+		//acutPrintf(_T("**more at:\n"));
+		//acutPrintf(_T("***************www.CivilSoftScience.com***************:\n"));
 
 		return (retCode) ;
 	}
@@ -53,6 +61,7 @@ public:
 		AcRx::AppRetCode retCode =AcRxDbxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
+		acutPrintf(_T("\n******CSSObjects.dbx Unoaded successfully*****\n"));
 
 		return (retCode) ;
 	}

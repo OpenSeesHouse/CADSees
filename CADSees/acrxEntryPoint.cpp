@@ -48,13 +48,14 @@ public:
 		// TODO: Add your initialization code here
 		//acedAlert(_T("\n******CADSees Program Loaded successfully*****\n**Developed by Seyed Alireza Jalali\n**at Civil Soft Science, Tehran, Iran\n**Description:\nA graphical post-processor for OpenSees software:\n**more at:\n***************www.CivilSoftScience.com***************:\n"));
 		
-		acutPrintf(_T("\n******CADSees Program Loaded successfully*****\n"));
-		acutPrintf(_T("**Developed by Seyed Alireza Jalali\n"));
-		acutPrintf(_T("**at Civil Soft Science, Tehran, Iran\n"));
-		acutPrintf(_T("**Description:\n"));
-		acutPrintf(_T("     A graphical pre/post-processor for OpenSees software:\n"));
-		acutPrintf(_T("**more at:\n"));
-		acutPrintf(_T("***************www.CivilSoftScience.com***************:\n"));
+		//acutPrintf(_T("\n******CADSees Program Loaded successfully*****\n"));
+		//acutPrintf(_T("**Developed by Seyed Alireza Jalali\n"));
+		//acutPrintf(_T("**at Civil Soft Science, Tehran, Iran\n"));
+		//acutPrintf(_T("**Description:\n"));
+		//acutPrintf(_T("     A graphical pre/post-processor for OpenSees software:\n"));
+		//acutPrintf(_T("**more at:\n"));
+		//acutPrintf(_T("***************www.CivilSoftScience.com***************:\n"));
+		acutPrintf(_T("\n******CADSees.arx Loaded successfully*****\n"));
 		return (retCode) ;
 
 	}
@@ -66,6 +67,7 @@ public:
 		AcRx::AppRetCode retCode =AcRxArxApp::On_kUnloadAppMsg (pkt) ;
 
 		// TODO: Unload dependencies here
+		acutPrintf(_T("\n******CADSees.arx Unloaded successfully*****\n"));
 
 		return (retCode) ;
 	}

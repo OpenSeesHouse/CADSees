@@ -33,7 +33,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup Label="Globals">
-    <TargetName Condition="'$(RDS)'!=''">$(RDS)$(ProjectName)</TargetName>
+    <TargetName Condition="'$(RDS)'!=''">$(ProjectName)</TargetName>
     <ProjectGuid>{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}</ProjectGuid>
     <!--For Visual Studio 2019, you can specify the most recent version of the Windows 10 SDK by using a value of 10.0-->
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -49,6 +49,9 @@
   <PropertyGroup Label="Configuration">
     <PlatformToolset Condition="'$(ArxSDKPlatform)'=='v141'">v141</PlatformToolset>
     <PlatformToolset Condition="'$(ArxSDKPlatform)'=='v142'">v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
@@ -66,6 +69,9 @@
       <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
     </ClCompile>
     <Link>
+    </Link>
+    <Link>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CADSees\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

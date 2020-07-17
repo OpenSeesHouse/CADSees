@@ -7,20 +7,36 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CADSees", "CADSees\CADSees.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CSSObjects", "CSSObjects\CSSObjects.vcxproj", "{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSSLoader", "CSSLoader\CSSLoader.csproj", "{424FC2EC-95C1-48D2-963D-85141DB53091}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|x64.ActiveCfg = Debug|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Debug|x64.Build.0 = Debug|x64
+		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|Any CPU.ActiveCfg = Release|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|x64.ActiveCfg = Release|x64
 		{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}.Release|x64.Build.0 = Release|x64
+		{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}.Debug|x64.ActiveCfg = Debug|x64
 		{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}.Debug|x64.Build.0 = Debug|x64
+		{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}.Release|Any CPU.ActiveCfg = Release|x64
 		{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}.Release|x64.ActiveCfg = Release|x64
 		{8C6B1C56-1A2D-4CB2-B18E-7D0C91F452E9}.Release|x64.Build.0 = Release|x64
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Debug|x64.Build.0 = Debug|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Release|x64.ActiveCfg = Release|Any CPU
+		{424FC2EC-95C1-48D2-963D-85141DB53091}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

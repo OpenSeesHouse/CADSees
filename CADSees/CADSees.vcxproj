@@ -33,7 +33,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup Label="Globals">
-    <TargetName Condition="'$(RDS)'!=''">$(RDS)$(ProjectName)</TargetName>
+    <TargetName Condition="'$(RDS)'!=''">$(ProjectName)</TargetName>
     <ProjectGuid>{F87873B0-2B5D-4D52-8FD5-BE1CDC50B2E3}</ProjectGuid>
     <!--For Visual Studio 2019, you can specify the most recent version of the Windows 10 SDK by using a value of 10.0-->
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -67,8 +67,9 @@
     <Link>
     </Link>
     <Link>
-      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CSSCSSObjects.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CSSObjects.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../CSSObjects/x64/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CADSees\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
