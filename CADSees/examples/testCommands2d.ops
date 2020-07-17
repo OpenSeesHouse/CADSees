@@ -1,0 +1,16 @@
+model basic -ndm 2 -ndf 3
+node 1 0.0 0.0
+node 2 600.0 0.0
+node 11 0.0 300.0
+node 12 600.0 300.0
+fixY 0. 1 1 1
+geomTransf Linear 1
+element elasticBeamColumn 111 1 11 22.9 2.1e6 2252.5 1
+element elasticBeamColumn 112 2 12 22.9 2.1e6 2252.5 1
+element elasticBeamColumn 211 11 12 22.9 2.1e6 2252.5 1
+pattern Plain 1 Linear {
+load 11 0.5 0. 0.
+load 12 0.5 0. 0.
+}
+recorder Node -file disp2d.txt -time -node 11 12 -dof 1 2 3 disp
+recorder display Frame 10 10 500 500 -wipe

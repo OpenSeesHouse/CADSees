@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Elements">
+      <UniqueIdentifier>{e46cb21a-40c0-46bb-bdda-9379269b69eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Node">
+      <UniqueIdentifier>{80afaaa6-f612-4c1e-8a29-da0ef3930d34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Recorders">
+      <UniqueIdentifier>{62e09fd7-a7c9-4134-97cf-d175d62d439f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Cube">
+      <UniqueIdentifier>{0f6113a8-cbe2-4e3d-be86-7d4ee8257fdf}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="StdAfx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="acrxEntryPoint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CSSObjects.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSCorotTruss.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSDispBeamColumn.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSElasticBeamColumn.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSElement.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSForceBeamColumn.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSLineElement.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSModElasticBeamColumn.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSTruss.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSZeroLength.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Recorders\CSSNodeRecorder.cpp">
+      <Filter>Recorders</Filter>
+    </ClCompile>
+    <ClCompile Include="Recorders\CSSRecorder.cpp">
+      <Filter>Recorders</Filter>
+    </ClCompile>
+    <ClCompile Include="Node\CSSNode.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
+    <ClCompile Include="DocData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube\CSSCube.cpp">
+      <Filter>Cube</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSCorotTruss.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSDispBeamColumn.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSElasticBeamColumn.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSElement.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSForceBeamColumn.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSLineElement.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSModElasticBeamColumn.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSTruss.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSZeroLength.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Recorders\CSSNodeRecorder.h">
+      <Filter>Recorders</Filter>
+    </ClInclude>
+    <ClInclude Include="Recorders\CSSRecorder.h">
+      <Filter>Recorders</Filter>
+    </ClInclude>
+    <ClInclude Include="Node\CSSNode.h">
+      <Filter>Node</Filter>
+    </ClInclude>
+    <ClInclude Include="DocData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cube\CSSCube.h">
+      <Filter>Cube</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CSSObjects.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+</Project>

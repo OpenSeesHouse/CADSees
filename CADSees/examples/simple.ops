@@ -1,0 +1,31 @@
+model basic -ndm 2 -ndf 3
+node 1 0 0
+node 2 0 0
+node 3 0 100
+fix 1 1 1 1
+
+uniaxialMaterial Elastic 1 10000
+geomTransf Linear 1
+element zeroLength 1 1 2 -mat 1 1 -dir 1 2
+element elasticBeamColumn 2 2 3 10. 10. 1000 1
+
+pattern Plain 1 Linear {
+	load 3 1. 0. 0.
+}
+
+recorder Node -file disp2d.txt -time -node 2 3 -dof 1 2 3 disp
+recorder display Frame 10 10 500 500 -wipe 
+vup 0 1 0       
+prp 0 0 1000000
+display 10 5 1
+# while {1} {}
+
+numberer Plain
+constraints Plain
+system BandGeneral
+test	NormUnbalance 1.e-6 10 0
+algorithm Newton
+integrator DisplacementControl 3 1 0.01
+
+analysis Static	
+analyze 1000
