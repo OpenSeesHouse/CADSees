@@ -4,7 +4,7 @@
 
 Welcome! and thank you for your interest in the CADSees application!
 
-CADSees is an OpenSees pre/post-processor designed for AutoCAD application.
+CADSees is an Open-Source pre/post-processor of OpenSees designed for AutoCAD application.
 The current version is based on the  2021 version of AutoCAD's x64 architecture.
 
 
