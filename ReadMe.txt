@@ -47,3 +47,9 @@ To successfully build the code (to use the built files see items 6-11)
  Note: to load the output file from autoCAD, it should have .ops extension.
  
 
+Change Log:
+
+2020/07/23 (1399/5/02 Iranian Date)
+-Updated projects settings for debugging. The CSSLoader.dll will not work by the new settings. We should load the .dbx and 
+ .arx files in sucess using arx->load command or by putting them inside the startup suit (from: manage->Applications->
+ load application->contents (below the bag icon in bottom side of the window))
