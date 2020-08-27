@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- CSSTruss.h : Declaration of the CSSTruss
+//----- CSSJoint2dElement.h : Declaration of the CSSJoint2dElement
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -47,31 +47,46 @@
 //-----------------------------------------------------------------------------
 #include "dbspline.h"
 
+#include "CSSElement.h"
 class CSSNode;
-#include "CSSLineElement.h"
 
 //-----------------------------------------------------------------------------
-class DLLIMPEXP CSSTruss : public CSSLineElement {
+class DLLIMPEXP CSSJoint2dElement : public CSSElement {
 
 public:
-	ACRX_DECLARE_MEMBERS(CSSTruss) ;
-
+	ACRX_DECLARE_MEMBERS(CSSJoint2dElement) ;
 protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
-	CSSTruss () ;
-	CSSTruss (int tag, int inode, int jnode) ;
-	virtual ~CSSTruss () ;
+	CSSJoint2dElement () ;
+	CSSJoint2dElement (int tag, int inode, int jnode, std::string type) ;
+	virtual ~CSSJoint2dElement () ;
 
-	//----- AcDbObject protocols
 	//- Dwg Filing protocol
 	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
 	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
-	virtual bool updateGeometry(bool useDeformedGeom) override;
+	//----- AcDbEntity protocols
+	//- Graphics protocol
+protected:
+	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 
+	//- Osnap points protocol
+	virtual void subList() const override;
+
+protected:
+	//AcDbCurve* pDeformedCurve;
+	//AcDbCurve* pUndeformedCurve;
+	Adesk::UInt32 m_iNod, m_jNod;
+	AcGePoint3d crds1, crds2;
+	AcGeVector3d vec;
+	double m_length;
+	CSSNode *piNode, *pjNode;
+public:
+	virtual bool updateGeometry(bool useDeformedGeom);
+	virtual double getLength() const override;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE
-ACDB_REGISTER_OBJECT_ENTRY_AUTO(CSSTruss)
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(CSSJoint2dElement)
 #endif

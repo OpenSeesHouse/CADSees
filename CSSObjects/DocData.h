@@ -54,5 +54,7 @@ public:
 	Adesk::UInt32 wireColor;
 	Adesk::UInt32 elementColor;
 	Adesk::UInt32 nodeColor;
+	Adesk::UInt32 eleDfrmdColor;
+	Adesk::UInt32 nodeDfrmdColor;
 
 } ;

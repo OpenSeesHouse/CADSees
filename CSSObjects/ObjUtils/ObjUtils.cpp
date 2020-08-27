@@ -87,7 +87,7 @@ double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int
 	CSSElement* pEle = 0;
 	if (type.compare("truss") == 0)
 	{
-		pEle = new CSSTruss(tag, iNode, jNode, nPnts);
+		pEle = new CSSTruss(tag, iNode, jNode);
 	} else if(type.compare("elasticBeamColumn") == 0)
 	{
 		pEle =new CSSElasticBeamColumn(tag, iNode, jNode, nPnts);
@@ -108,25 +108,19 @@ double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int
 	{
 		pEle =new CSSZeroLength(tag, iNode, jNode);
 		
+	} else if(type.compare("corotTruss") == 0)
+	{
+		pEle = new CSSCorotTruss(tag, iNode, jNode);
 	}
 
+	pEle->updateGeometry(false);
 	if(pEle->getIsNull())
 	{
 		acutPrintf(_T("Could not add element with tag %d to the model"), tag);
 		delete pEle;
 		return 0;
 	}
-	CSSLineElement *pLinEle = CSSLineElement::cast(pEle);
-	double l = 0;
-	if (pLinEle != 0)
-	{
-		 l = pLinEle->getLength();
-		//if(CSSNode::getSize() == 0)
-		//{
-		//	CSSNode::setSize(l*NODSIZERAT);
-		//	CSSNode::setTagSize(l*NODSIZERAT);
-		//}
-	}
+	double l = pEle->getLength();
 
 	AcDbBlockTableRecord* pBTR = getModelSpace(OpenMode::kForWrite);
 	assert(pBTR != NULL);
@@ -136,34 +130,36 @@ double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int
 	return l;
 }
 
-void ObjUtils::addNodeRecorder(int objTag, int dof, std::string path, int dataCol, bool hasTime)
+void ObjUtils::addNodeRecorder(int* objTags, int* dofs, int num, std::string path, int* dataCols, bool hasTime)
 {
 	AcDbObjectId id;
-	if (getRecorder(&id, objTag, dof, "disp"))
-	{
-		acutPrintf(_T("Element with objTag %d and dof %d already exists in model; ignoring new recorder"), objTag, dof);
-		return;
-	}
-	CSSNodeRecorder* pRcrdr = new CSSNodeRecorder(objTag, dof, path, dataCol, hasTime);
-	 AcDbDictionary *pNamedobj;
+	if (num == 1)
+		if (getRecorder(&id, objTags[0], dofs[0], "disp"))
+		{
+			acutPrintf(_T("Element with objTag %d and dof %d already exists in model; ignoring new recorder"), objTags[0], dofs[0]);
+			return;
+		}
+	AcDbDictionary *pNamedobj;
     AcDbDictionary *pDict = NULL;
 	AcDbDatabase *pCurDwg = acdbHostApplicationServices()->workingDatabase();
 	pCurDwg->getNamedObjectsDictionary(pNamedobj, AcDb::kForWrite);
-	if (pNamedobj->getAt(NODENTRYKEY, (AcDbObject*&) pDict,
-        AcDb::kForWrite) == Acad::eKeyNotFound)
+	ErrorStatus es = pNamedobj->getAt(NODENTRYKEY, (AcDbObject*&)pDict, AcDb::kForWrite);
+	if (es != Acad::eOk)
     {
         pDict = new AcDbDictionary;
         AcDbObjectId DictId;
         pNamedobj->setAt(NODENTRYKEY, pDict, DictId);
     }
     pNamedobj->close();
-    // Add object A to the ASDK_DICT dictionary.
-    //
-	AcString str;
-	str.format(_T("%d"), pRcrdr->getRcrdrTag());
-    pDict->setAt(str.kACharPtr(), pRcrdr, id);
+	for (int i = 0; i < num; i++)
+	{
+		CSSNodeRecorder* pRcrdr = new CSSNodeRecorder(objTags[i], dofs[i], path, dataCols[i], hasTime);
+		AcString str;
+		str.format(_T("%d"), pRcrdr->getRcrdrTag());
+		pDict->setAt(str.kACharPtr(), pRcrdr, id);
+		pRcrdr->close();
+	}
     pDict->close();
-	pRcrdr->close();
 }
 
 void ObjUtils::GetAllNodes(std::vector<AcDbObjectId>& resIds)
@@ -467,7 +463,7 @@ void ObjUtils::RedrawElementsGraphics(bool redrawBody)
 		assert(pEle != NULL);
 		if (redrawBody)
 		{
-			pEle->updateDeformedGeometry();
+			pEle->updateGeometry(true);
 		}
 		pEle->recordGraphicsModified();
 		pEle->draw();
@@ -730,6 +726,8 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 			if (es != eOk)
 			{
 				acedAlert(_T("getRecorder:: error closing entity"));
+				es = pDict->close();
+				delete pIter;
 				return false;
 			}
 			continue;
@@ -740,6 +738,8 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 			if (es != eOk)
 			{
 				acedAlert(_T("getRecorder:: error closing entity"));
+				es = pDict->close();
+				delete pIter;
 				return false;
 			}
 			continue;
@@ -750,6 +750,8 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 			if (es != eOk)
 			{
 				acedAlert(_T("getRecorder:: error closing entity"));
+				es = pDict->close();
+				delete pIter;
 				return false;
 			}
 			continue;
@@ -757,9 +759,11 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 
 		// we should add check for respType in future
 		*pResId = pIter->objectId();
-		if (*pResId != AcDbObjectId::kNull)
+		if (*pResId == AcDbObjectId::kNull)
 		{
 			acedAlert(_T("getRecorder:: error getting Id"));
+			es = pDict->close();
+			delete pIter;
 			return false;
 		}
 		found = true;
@@ -767,6 +771,8 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 		if (es != eOk)
 		{
 			acedAlert(_T("getRecorder:: error closing panel"));
+			es = pDict->close();
+			delete pIter;
 			return false;
 		}
 		break;
@@ -775,6 +781,7 @@ bool ObjUtils::getRecorder(AcDbObjectId* pResId, int obj_tag, int dof, const cha
 	if (es != eOk)
 	{
 		acedAlert(_T("getRecorder:: error closing Dictionary"));
+		delete pIter;
 		return false;
 	}
 	delete pIter;

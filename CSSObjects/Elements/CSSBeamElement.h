@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- CSSTruss.h : Declaration of the CSSTruss
+//----- CSSBeamElement.h : Declaration of the CSSBeamElement
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -47,31 +47,45 @@
 //-----------------------------------------------------------------------------
 #include "dbspline.h"
 
+#include "CSSBeamElement.h"
 class CSSNode;
-#include "CSSLineElement.h"
 
 //-----------------------------------------------------------------------------
-class DLLIMPEXP CSSTruss : public CSSLineElement {
+class DLLIMPEXP CSSBeamElement : public CSSLineElement {
 
 public:
-	ACRX_DECLARE_MEMBERS(CSSTruss) ;
-
+	ACRX_DECLARE_MEMBERS(CSSBeamElement) ;
 protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
-	CSSTruss () ;
-	CSSTruss (int tag, int inode, int jnode) ;
-	virtual ~CSSTruss () ;
+	CSSBeamElement () ;
+	CSSBeamElement (int tag, int inode, int jnode, int nIntegPnts, std::string type) ;
+	virtual ~CSSBeamElement () ;
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
 	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
 	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
-	virtual bool updateGeometry(bool useDeformedGeom) override;
+	//----- AcDbEntity protocols
+	//- Graphics protocol
+protected:
 
+	//- Osnap points protocol
+public:
+	//- Grip points protocol
+	virtual void subList() const override;
+
+protected:
+	Adesk::UInt32 m_numIntegPnts;
+	AcGePoint3dArray pntArr;
+	AcGeVector3d vec2;
+	//CSSNode** m_pIntegPoints;
+	static double* getSectionLocations(int numSections);
+public:
+	virtual bool updateGeometry(bool useDeformedGeom) override;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE
-ACDB_REGISTER_OBJECT_ENTRY_AUTO(CSSTruss)
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(CSSBeamElement)
 #endif

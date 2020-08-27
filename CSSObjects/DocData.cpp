@@ -42,8 +42,10 @@ CDocData::CDocData () {
 	NDM = 0;
 	NDOF = 0;
 	wireColor = 254;
-	elementColor = 4;
-	nodeColor = 30;
+	elementColor = 7;
+	eleDfrmdColor = 4;
+	nodeColor = 7;
+	nodeDfrmdColor = 30;
 }
 
 //-----------------------------------------------------------------------------

@@ -151,7 +151,6 @@ Adesk::Boolean CSSNode::subWorldDraw (AcGiWorldDraw *mode) {
 		initialize();
 	if (ObjUtils::getShowDeformed())
 	{
-		pDeformedCube->setColorIndex(DOCDATA.nodeColor);
 		mode->geometry().draw(pDeformedCube);
 		if (DISPOPTIONS.dispUndeformedWire)
 		{
@@ -305,17 +304,17 @@ void CSSNode::setDeformationAt(int dof, double value)
 
 void CSSNode::initialize()
 {
-	AcGeMatrix3d trans;
-	trans.setToTranslation((m_crds/*+m_shiftVec*douplShift*/).asVector());
 	if (pUndeformedCube == NULL)
 	{
 		pUndeformedCube = new CSSCube(m_crds, DISPOPTIONS.nodeSize);
 		pDeformedCube = new CSSCube(pUndeformedCube);
+		pDeformedCube->setColorIndex(DOCDATA.nodeDfrmdColor);
 	} else
 	{
 		pUndeformedCube->setSize(DISPOPTIONS.nodeSize);
 		pDeformedCube->setSize(DISPOPTIONS.nodeSize);
 	}
+
 }
 
 void CSSNode::updateDeformedGeometry()

@@ -53,48 +53,52 @@ class CSSNode;
 class DLLIMPEXP CSSElement : public AcDbEntity {
 
 public:
-	ACRX_DECLARE_MEMBERS(CSSElement) ;
+	ACRX_DECLARE_MEMBERS(CSSElement);
 	static std::vector<std::string> getSupportedEleList()
 	{
 		std::vector<std::string> res;
 		res.push_back("truss");
+		res.push_back("corotTruss");
 		res.push_back("elasticBeamColumn");
 		res.push_back("dispBeamColumn");
-		res.push_back("forceBeamColumn"); 
+		res.push_back("forceBeamColumn");
 		res.push_back("nonlinearBeamColumn");
 		res.push_back("zeroLength");
+		res.push_back("ModElasticBeam2d");
+		res.push_back("ModElasticBeam3d");
 		return res;
 	}
 protected:
-	static Adesk::UInt32 kCurrentVersionNumber ;
+	AcDbEntity* getDeformedEntity();
+	AcDbEntity* getUndeformedEntity();
+	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
 public:
-	CSSElement () ;
-	CSSElement (int tag, std::string type) ;
-	virtual ~CSSElement () ;
+	CSSElement();
+	CSSElement(int tag, std::string type);
+	virtual ~CSSElement();
 
 	//----- AcDbObject protocols
 	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
-	//----- AcDbEntity protocols
-	//- Graphics protocol
-
-	//- Osnap points protocol
+	virtual Acad::ErrorStatus dwgOutFields(AcDbDwgFiler* pFiler) const;
+	virtual Acad::ErrorStatus dwgInFields(AcDbDwgFiler* pFiler);
 public:
 
 	//- Grip points protocol
 	virtual void subList() const override;
 
 protected:
+	AcDbEntity* pDeformedEntity;
+	AcDbEntity* pUndeformedEntity;
+	static Adesk::UInt32 kCurrentVersionNumber;
 	Adesk::Boolean m_isNull;
 	Adesk::UInt32 m_tag;
 	AcString m_type;
 public:
 	int getTag() const;
 	int getIsNull() const;
-	virtual void updateDeformedGeometry();
-} ;
+	virtual bool updateGeometry(bool useDeformedGeom);
+	virtual double getLength() const { return 0; }
+};
 
 #ifdef CADSEESOBJECTS_MODULE
 ACDB_REGISTER_OBJECT_ENTRY_AUTO(CSSElement)

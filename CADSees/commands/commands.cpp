@@ -166,16 +166,27 @@ void addRecorder(std::vector<std::string> line)
 				}
 			}
 		}
+		int num = dofList.size() * tagList.size();
+		int* tags = new int[num];
+		int* dofs = new int[num];
+		int* colIds = new int[num];
 		int colId = hasTime? 1: 0;
+		int k = 0;
 		for (int i = 0; i < tagList.size(); i++)
 		{
-			int tag = tagList[i];
+			int ;
 			for (int j = 0; j < dofList.size(); j++)
 			{
-				int dof = dofList[j];
-				ObjUtils::addNodeRecorder(tag, dof, path, colId++, hasTime);
+				dofs[k] = dofList[j];
+				tags[k] = tagList[i];
+				colIds[k] = colId++;
+				k++;
 			}
 		}
+		ObjUtils::addNodeRecorder(tags, dofs, k - 1, path, colIds, hasTime);
+		delete[] tags;
+		delete[] dofs;
+		delete[] colIds;
 	}
 }
 

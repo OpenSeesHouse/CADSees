@@ -32,7 +32,7 @@ Adesk::UInt32 CSSTruss::kCurrentVersionNumber =1 ;
 ACRX_DXF_DEFINE_MEMBERS (
 	CSSTruss, CSSLineElement,
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
-	AcDbProxyEntity::kNoOperation, CSSTRUSS,
+	AcDbProxyEntity::kNoOperation, CSS_truss,
 CADSees
 |Product Desc:     An OpenSees pre/post-processor
 |Company:          Civil Soft Science
@@ -44,11 +44,15 @@ CSSTruss::CSSTruss () : CSSLineElement () {
 	m_type = AcString(_T("truss"));
 }
 
-CSSTruss::CSSTruss(int tag, int inode, int jnode, int nIntegPnts): CSSLineElement (tag, inode, jnode, nIntegPnts, "truss")
+CSSTruss::CSSTruss(int tag, int inode, int jnode): CSSLineElement (tag, inode, jnode, "truss")
 {
 }
 
 CSSTruss::~CSSTruss () {
+	if (pDeformedEntity != 0)
+		delete pDeformedEntity;
+	if (pUndeformedEntity != 0)
+		delete pUndeformedEntity;
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +61,7 @@ CSSTruss::~CSSTruss () {
 Acad::ErrorStatus CSSTruss::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	assertReadEnabled () ;
 	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgOutFields (pFiler) ;
+	Acad::ErrorStatus es = CSSLineElement::dwgOutFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be saved first
@@ -71,7 +75,7 @@ Acad::ErrorStatus CSSTruss::dwgOutFields (AcDbDwgFiler *pFiler) const {
 Acad::ErrorStatus CSSTruss::dwgInFields (AcDbDwgFiler *pFiler) {
 	assertWriteEnabled () ;
 	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgInFields (pFiler) ;
+	Acad::ErrorStatus es = CSSLineElement::dwgInFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be read first
@@ -88,132 +92,24 @@ Acad::ErrorStatus CSSTruss::dwgInFields (AcDbDwgFiler *pFiler) {
 	return (pFiler->filerStatus ()) ;
 }
 
-//-----------------------------------------------------------------------------
-//----- CSSLineElement protocols
-Adesk::Boolean CSSTruss::subWorldDraw (AcGiWorldDraw *mode) {
-	assertReadEnabled () ;
-	return (CSSLineElement::subWorldDraw (mode)) ;
-}
-
-
-Adesk::UInt32 CSSTruss::subSetAttributes (AcGiDrawableTraits *traits) {
-	assertReadEnabled () ;
-	return (CSSLineElement::subSetAttributes (traits)) ;
-}
-
-	//- Osnap points protocol
-Acad::ErrorStatus CSSTruss::subGetOsnapPoints (
-	AcDb::OsnapMode osnapMode,
-	Adesk::GsMarker gsSelectionMark,
-	const AcGePoint3d &pickPoint,
-	const AcGePoint3d &lastPoint,
-	const AcGeMatrix3d &viewXform,
-	AcGePoint3dArray &snapPoints,
-	AcDbIntArray &geomIds) const
+bool CSSTruss::updateGeometry(bool useDeformedGeom)
 {
-	assertReadEnabled () ;
-	return (CSSLineElement::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
-}
-
-Acad::ErrorStatus CSSTruss::subGetOsnapPoints (
-	AcDb::OsnapMode osnapMode,
-	Adesk::GsMarker gsSelectionMark,
-	const AcGePoint3d &pickPoint,
-	const AcGePoint3d &lastPoint,
-	const AcGeMatrix3d &viewXform,
-	AcGePoint3dArray &snapPoints,
-	AcDbIntArray &geomIds,
-	const AcGeMatrix3d &insertionMat) const
-{
-	assertReadEnabled () ;
-	return (CSSLineElement::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
-}
-
-//- Grip points protocol
-Acad::ErrorStatus CSSTruss::subGetGripPoints (
-	AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds
-) const {
-	assertReadEnabled () ;
-	//----- This method is never called unless you return eNotImplemented 
-	//----- from the new getGripPoints() method below (which is the default implementation)
-
-	return (CSSLineElement::subGetGripPoints (gripPoints, osnapModes, geomIds)) ;
-}
-
-Acad::ErrorStatus CSSTruss::subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) {
-	assertWriteEnabled () ;
-	//----- This method is never called unless you return eNotImplemented 
-	//----- from the new moveGripPointsAt() method below (which is the default implementation)
-
-	return (CSSLineElement::subMoveGripPointsAt (indices, offset)) ;
-}
-
-Acad::ErrorStatus CSSTruss::subGetGripPoints (
-	AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
-	const AcGeVector3d &curViewDir, const int bitflags
-) const {
-	assertReadEnabled () ;
-
-	//----- If you return eNotImplemented here, that will force AutoCAD to call
-	//----- the older getGripPoints() implementation. The call below may return
-	//----- eNotImplemented depending of your base class.
-	return (CSSLineElement::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
-}
-
-Acad::ErrorStatus CSSTruss::subMoveGripPointsAt (
-	const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset,
-	const int bitflags
-) {
-	assertWriteEnabled () ;
-
-	//----- If you return eNotImplemented here, that will force AutoCAD to call
-	//----- the older getGripPoints() implementation. The call below may return
-	//----- eNotImplemented depending of your base class.
-	return (CSSLineElement::subMoveGripPointsAt (gripAppData, offset, bitflags)) ;
-}
-
-bool CSSTruss::initiatePnts(AcGePoint3dArray& pntArr, AcGeVector3d& vec1, AcGeVector3d& vec2, bool useDeformedGeom)
-{
-	AcDbObjectId id;
-	if (!ObjUtils::getNode(&id, m_iNod))
-	{
-		acutPrintf(_T("CSSLineElement:ERROR finding node object"));
+	assertWriteEnabled(false, true);
+	bool res = CSSLineElement::updateGeometry(useDeformedGeom);
+	if (!res)
 		return false;
-	}
-	AcDbObject   *pObj = NULL;
-	CSSNode *piNode;
-	ErrorStatus es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    piNode = CSSNode::cast(pObj);
-    assert(piNode != NULL);
 
-	if (!ObjUtils::getNode(&id, m_jNod))
+	if (pDeformedEntity == nullptr)
 	{
-		acutPrintf(_T("CSSLineElement:ERROR finding node object"));
-		piNode->close();
-		return false;
+		pDeformedEntity = new AcDbLine(crds1, crds2);
+		pUndeformedEntity = new AcDbLine(crds1, crds2);
 	}
-	pObj = NULL;
-	CSSNode *pjNode;
-	es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    pjNode = CSSNode::cast(pObj);
-    assert(pjNode != NULL);
-	AcGePoint3d crds1, crds2;
-	if (useDeformedGeom)
+	else if (useDeformedGeom)
 	{
-		crds1 = piNode->getDeformedCrds();
-		crds2 = pjNode->getDeformedCrds();
-	} else
-	{
-		crds1 = piNode->getCrds();
-		crds2 = pjNode->getCrds();
-		
+		AcDbLine* pLine = (AcDbLine*)pDeformedEntity;
+		pLine->setStartPoint(crds1);
+		pLine->setEndPoint(crds2);
 	}
-	piNode->close();
-	pjNode->close();
-	vec1 = vec2 = crds2-crds1;
-	pntArr.append(crds1);
-	pntArr.append(crds2);
-	return true;
+	m_isNull = false;
+
 }

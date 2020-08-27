@@ -86,11 +86,13 @@
     <ClCompile Include="CSSObjects.cpp" />
     <ClCompile Include="Cube\CSSCube.cpp" />
     <ClCompile Include="DocData.cpp" />
+    <ClCompile Include="Elements\CSSBeamElement.cpp" />
     <ClCompile Include="Elements\CSSCorotTruss.cpp" />
     <ClCompile Include="Elements\CSSDispBeamColumn.cpp" />
     <ClCompile Include="Elements\CSSElasticBeamColumn.cpp" />
     <ClCompile Include="Elements\CSSElement.cpp" />
     <ClCompile Include="Elements\CSSForceBeamColumn.cpp" />
+    <ClCompile Include="Elements\CSSJoint2dElement.cpp" />
     <ClCompile Include="Elements\CSSLineElement.cpp" />
     <ClCompile Include="Elements\CSSModElasticBeamColumn.cpp" />
     <ClCompile Include="Elements\CSSTruss.cpp" />
@@ -107,11 +109,13 @@
   <ItemGroup>
     <ClInclude Include="Cube\CSSCube.h" />
     <ClInclude Include="DocData.h" />
+    <ClInclude Include="Elements\CSSBeamElement.h" />
     <ClInclude Include="Elements\CSSCorotTruss.h" />
     <ClInclude Include="Elements\CSSDispBeamColumn.h" />
     <ClInclude Include="Elements\CSSElasticBeamColumn.h" />
     <ClInclude Include="Elements\CSSElement.h" />
     <ClInclude Include="Elements\CSSForceBeamColumn.h" />
+    <ClInclude Include="Elements\CSSJoint2dElement.h" />
     <ClInclude Include="Elements\CSSLineElement.h" />
     <ClInclude Include="Elements\CSSModElasticBeamColumn.h" />
     <ClInclude Include="Elements\CSSTruss.h" />

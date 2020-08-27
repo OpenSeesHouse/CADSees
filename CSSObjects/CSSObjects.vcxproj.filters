@@ -84,6 +84,12 @@
     <ClCompile Include="ObjUtils\ObjUtils.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\CSSBeamElement.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSJoint2dElement.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -136,6 +142,12 @@
     </ClInclude>
     <ClInclude Include="ObjUtils\ObjUtils.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSBeamElement.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSJoint2dElement.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

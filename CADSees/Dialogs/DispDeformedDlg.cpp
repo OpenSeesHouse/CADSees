@@ -32,7 +32,7 @@ void DispDeformedDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_RESP_TIME_TEXT, m_respTimeStr);
 	DDX_Text(pDX, IDC_LAST_STEP_TEXT, m_lastStepStr);
 	DDX_Check(pDX, IDC_DISP_DEFORMED_CHECK, m_dispDeformed);
-	DDX_Check(pDX, IDC_DISP_DEFORMED_CHECK, m_dispWire);
+	DDX_Check(pDX, IDC_DISP_DEFORMED_CHECK2, m_dispWire);
 	DDX_Text(pDX, IDC_RESP_STEP_EDIT, m_respStep);
 	DDX_Control(pDX, IDC_RESP_STEP_SPIN, m_stepSpin);
 	DDX_Control(pDX, IDC_RESP_STEP_SLIDER, m_stepSlider);
@@ -126,7 +126,7 @@ void DispDeformedDlg::OnBnClickedDispDeformedCheck()
 	{
 		DISPOPTIONS.dispDeformedShape = false;
 		showDfrmd = false;
-		m_dispDeformedCheck.EnableWindow(FALSE);
+		//m_dispDeformedCheck.EnableWindow(FALSE);
 		m_stepSlider.EnableWindow(FALSE);
 		m_stepSpin.EnableWindow(FALSE);
 	}
@@ -134,7 +134,7 @@ void DispDeformedDlg::OnBnClickedDispDeformedCheck()
 	{
 		DISPOPTIONS.dispDeformedShape = true;
 		showDfrmd = true;
-		m_dispDeformedCheck.EnableWindow(TRUE);
+		//m_dispDeformedCheck.EnableWindow(TRUE);
 		m_stepSlider.EnableWindow(TRUE);
 		m_stepSpin.EnableWindow(TRUE);		
 	}
@@ -154,13 +154,13 @@ void DispDeformedDlg::OnBnClickedDispWireCheck()
 	{
 		DISPOPTIONS.dispUndeformedWire = false;
 		showDfrmd = false;
-		m_dispWireCheck.EnableWindow(FALSE);
+		//m_dispWireCheck.EnableWindow(FALSE);
 	}
 	else
 	{
 		DISPOPTIONS.dispUndeformedWire = true;
 		showDfrmd = true;
-		m_dispWireCheck.EnableWindow(TRUE);
+		//m_dispWireCheck.EnableWindow(TRUE);
 	}
 	ObjUtils::setShowUndeformedWire(showDfrmd);
 	ObjUtils::RedrawGraphics(false);

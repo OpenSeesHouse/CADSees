@@ -121,7 +121,7 @@ public:
 		INPUTFILE = fileName;
 		std::ifstream from(fileName.c_str());
 		std::string line;
-		double eleLength = 0;
+		double maxEleLength = 0;
 		while(getline (from,line,'\n'))
 		{
 			if (line.size()==0) continue;
@@ -138,7 +138,9 @@ public:
 			}
 			if (words[0].compare("element") == 0)
 			{
-				eleLength = addElement(words);
+				double eleLength = addElement(words);
+				if (eleLength > maxEleLength)
+					maxEleLength = eleLength;
 				continue;
 			}
 			if (words[0].compare("recorder") == 0)
@@ -147,13 +149,13 @@ public:
 				continue;
 			}
 		}
-
-		if (eleLength != 0 && DISPOPTIONS.nodeSize < 1.E-5)
+		double val = DISPOPTIONS.nodeSize;
+		if (maxEleLength != 0 && DISPOPTIONS.nodeSize < 1.E-5)
 		{
-			DISPOPTIONS.nodeSize = eleLength*NODSIZERAT;
-			DISPOPTIONS.tagSize = eleLength*NODSIZERAT;
-			ObjUtils::setNodesSize(eleLength*NODSIZERAT);
-			ObjUtils::setTagsSize(eleLength*NODSIZERAT);
+			DISPOPTIONS.nodeSize = maxEleLength*NODSIZERAT;
+			DISPOPTIONS.tagSize = maxEleLength *NODSIZERAT;
+			ObjUtils::setNodesSize(maxEleLength *NODSIZERAT);
+			ObjUtils::setTagsSize(maxEleLength *NODSIZERAT);
 
 		}
 		std::string::size_type ind = INPUTFILE.find_last_of("\\");

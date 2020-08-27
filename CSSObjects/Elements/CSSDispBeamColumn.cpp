@@ -30,9 +30,9 @@ Adesk::UInt32 CSSDispBeamColumn::kCurrentVersionNumber =1 ;
 
 //-----------------------------------------------------------------------------
 ACRX_DXF_DEFINE_MEMBERS (
-	CSSDispBeamColumn, CSSLineElement,
+	CSSDispBeamColumn, CSSBeamElement,
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
-	AcDbProxyEntity::kNoOperation, CSSDISPBEAMCOLUMN,
+	AcDbProxyEntity::kNoOperation, CSS_dispBeamColumn,
 CADSees
 |Product Desc:     An OpenSees pre/post-processor
 |Company:          Civil Soft Science
@@ -40,11 +40,11 @@ CADSees
 )
 
 //-----------------------------------------------------------------------------
-CSSDispBeamColumn::CSSDispBeamColumn () : CSSLineElement () {
+CSSDispBeamColumn::CSSDispBeamColumn () : CSSBeamElement () {
 	m_type = AcString(_T("dispBeamColumn"));
 }
 
-CSSDispBeamColumn::CSSDispBeamColumn(int tag, int inode, int jnode, int nIntegPnts): CSSLineElement (tag, inode, jnode, nIntegPnts, "dispBeamColumn")
+CSSDispBeamColumn::CSSDispBeamColumn(int tag, int inode, int jnode, int nIntegPnts): CSSBeamElement (tag, inode, jnode, nIntegPnts, "dispBeamColumn")
 {
 }
 
@@ -57,7 +57,7 @@ CSSDispBeamColumn::~CSSDispBeamColumn () {
 Acad::ErrorStatus CSSDispBeamColumn::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	assertReadEnabled () ;
 	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgOutFields (pFiler) ;
+	Acad::ErrorStatus es =CSSBeamElement::dwgOutFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be saved first
@@ -71,7 +71,7 @@ Acad::ErrorStatus CSSDispBeamColumn::dwgOutFields (AcDbDwgFiler *pFiler) const {
 Acad::ErrorStatus CSSDispBeamColumn::dwgInFields (AcDbDwgFiler *pFiler) {
 	assertWriteEnabled () ;
 	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgInFields (pFiler) ;
+	Acad::ErrorStatus es =CSSBeamElement::dwgInFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be read first
@@ -87,88 +87,3 @@ Acad::ErrorStatus CSSDispBeamColumn::dwgInFields (AcDbDwgFiler *pFiler) {
 	//----- Read params
 	return (pFiler->filerStatus ()) ;
 }
-
-//-----------------------------------------------------------------------------
-//----- CSSLineElement protocols
-Adesk::Boolean CSSDispBeamColumn::subWorldDraw (AcGiWorldDraw *mode) {
-	assertReadEnabled () ;
-	return (CSSLineElement::subWorldDraw (mode)) ;
-}
-
-
-Adesk::UInt32 CSSDispBeamColumn::subSetAttributes (AcGiDrawableTraits *traits) {
-	assertReadEnabled () ;
-	return (CSSLineElement::subSetAttributes (traits)) ;
-}
-
-	//- Osnap points protocol
-Acad::ErrorStatus CSSDispBeamColumn::subGetOsnapPoints (
-	AcDb::OsnapMode osnapMode,
-	Adesk::GsMarker gsSelectionMark,
-	const AcGePoint3d &pickPoint,
-	const AcGePoint3d &lastPoint,
-	const AcGeMatrix3d &viewXform,
-	AcGePoint3dArray &snapPoints,
-	AcDbIntArray &geomIds) const
-{
-	assertReadEnabled () ;
-	return (CSSLineElement::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds)) ;
-}
-
-Acad::ErrorStatus CSSDispBeamColumn::subGetOsnapPoints (
-	AcDb::OsnapMode osnapMode,
-	Adesk::GsMarker gsSelectionMark,
-	const AcGePoint3d &pickPoint,
-	const AcGePoint3d &lastPoint,
-	const AcGeMatrix3d &viewXform,
-	AcGePoint3dArray &snapPoints,
-	AcDbIntArray &geomIds,
-	const AcGeMatrix3d &insertionMat) const
-{
-	assertReadEnabled () ;
-	return (CSSLineElement::subGetOsnapPoints (osnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints, geomIds, insertionMat)) ;
-}
-
-//- Grip points protocol
-Acad::ErrorStatus CSSDispBeamColumn::subGetGripPoints (
-	AcGePoint3dArray &gripPoints, AcDbIntArray &osnapModes, AcDbIntArray &geomIds
-) const {
-	assertReadEnabled () ;
-	//----- This method is never called unless you return eNotImplemented 
-	//----- from the new getGripPoints() method below (which is the default implementation)
-
-	return (CSSLineElement::subGetGripPoints (gripPoints, osnapModes, geomIds)) ;
-}
-
-Acad::ErrorStatus CSSDispBeamColumn::subMoveGripPointsAt (const AcDbIntArray &indices, const AcGeVector3d &offset) {
-	assertWriteEnabled () ;
-	//----- This method is never called unless you return eNotImplemented 
-	//----- from the new moveGripPointsAt() method below (which is the default implementation)
-
-	return (CSSLineElement::subMoveGripPointsAt (indices, offset)) ;
-}
-
-Acad::ErrorStatus CSSDispBeamColumn::subGetGripPoints (
-	AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
-	const AcGeVector3d &curViewDir, const int bitflags
-) const {
-	assertReadEnabled () ;
-
-	//----- If you return eNotImplemented here, that will force AutoCAD to call
-	//----- the older getGripPoints() implementation. The call below may return
-	//----- eNotImplemented depending of your base class.
-	return (CSSLineElement::subGetGripPoints (grips, curViewUnitSize, gripSize, curViewDir, bitflags)) ;
-}
-
-Acad::ErrorStatus CSSDispBeamColumn::subMoveGripPointsAt (
-	const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset,
-	const int bitflags
-) {
-	assertWriteEnabled () ;
-
-	//----- If you return eNotImplemented here, that will force AutoCAD to call
-	//----- the older getGripPoints() implementation. The call below may return
-	//----- eNotImplemented depending of your base class.
-	return (CSSLineElement::subMoveGripPointsAt (gripAppData, offset, bitflags)) ;
-}
-

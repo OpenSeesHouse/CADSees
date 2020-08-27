@@ -39,10 +39,13 @@ CADSees
 |WEB Address:      www.CivilSoftScience.com
 )
 
+
 //-----------------------------------------------------------------------------
 CSSElement::CSSElement () : AcDbEntity () {
 	m_tag = 0;
 	m_isNull = true;
+	pDeformedEntity = 0;
+	pUndeformedEntity = 0;
 }
 
 CSSElement::CSSElement(int tag, std::string type): AcDbEntity ()
@@ -50,6 +53,8 @@ CSSElement::CSSElement(int tag, std::string type): AcDbEntity ()
 	m_tag = tag;
 	m_type = AcString(type.c_str(), AcString::Encoding::Utf8);
 	m_isNull = false;
+	pDeformedEntity = 0;
+	pUndeformedEntity = 0;
 }
 
 CSSElement::~CSSElement () {
@@ -124,6 +129,41 @@ int CSSElement::getIsNull() const
 }
 
 
-void CSSElement::updateDeformedGeometry()
+bool CSSElement::updateGeometry(bool useDeformedGeom)
 {
+	return true;
 }
+
+
+AcDbEntity* CSSElement::getDeformedEntity()
+{
+	return pDeformedEntity;
+}
+AcDbEntity* CSSElement::getUndeformedEntity()
+{
+	return pUndeformedEntity;
+}
+Adesk::Boolean CSSElement::subWorldDraw (AcGiWorldDraw *mode) {
+	assertReadEnabled () ;
+	if (pUndeformedEntity == NULL || pDeformedEntity == NULL)
+		return (AcDbEntity::subWorldDraw(mode));
+
+	pDeformedEntity->setColorIndex(DOCDATA.eleDfrmdColor);
+	if (ObjUtils::getShowDeformed())
+	{
+		mode->geometry().draw(pDeformedEntity);
+		if (DISPOPTIONS.dispUndeformedWire)
+		{
+			pUndeformedEntity->setColorIndex(DOCDATA.wireColor);
+			mode->geometry().draw(pUndeformedEntity);
+		}
+	}
+	else
+	{
+		pUndeformedEntity->setColorIndex(DOCDATA.elementColor);
+		mode->geometry().draw(pUndeformedEntity);
+	}
+	return (AcDbEntity::subWorldDraw (mode)) ;
+}
+
+
