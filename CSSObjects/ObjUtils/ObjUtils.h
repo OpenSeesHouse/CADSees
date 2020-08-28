@@ -76,7 +76,7 @@ public:
 	static void setNodesSize(double val);
 
 	static void addNode(int tag, AcGePoint3d pnt);
-	static double addElement(std::string type, int tag, int iNode, int jNode, int nPnts);
+	static double addElement(std::string type, int tag, int iNode, int jNode, int nPnts, int kNode, int lNode);
 	static void addNodeRecorder(int* objTags, int* dofs, int num, std::string path, int* dataCols, bool hasTime);
 	static void RedrawGraphics(bool redrawBody = false);
 	static void RedrawNodeGraphics(bool redrawBody = false);

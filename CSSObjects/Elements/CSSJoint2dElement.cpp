@@ -46,9 +46,10 @@ CSSJoint2dElement::CSSJoint2dElement () : CSSElement () {
 	m_kNod = 0;
 	m_lNod = 0;
 	m_length = 0;
+	m_type = AcString(_T("Joint2d"));
 }
 
-CSSJoint2dElement::CSSJoint2dElement(int tag, int inode, int jnode, int knode, int lnode, std::string type) : CSSElement(tag, type)
+CSSJoint2dElement::CSSJoint2dElement(int tag, int inode, int jnode, int knode, int lnode) : CSSElement(tag, "Joint2d")
 {
 	m_length = 0;
 	m_isNull = true;
@@ -56,6 +57,7 @@ CSSJoint2dElement::CSSJoint2dElement(int tag, int inode, int jnode, int knode, i
 	m_jNod = jnode;
 	m_kNod = knode;
 	m_lNod = lnode;
+	initiated = false;
 }
 
 CSSJoint2dElement::~CSSJoint2dElement () {
@@ -123,16 +125,50 @@ Acad::ErrorStatus CSSJoint2dElement::dwgInFields (AcDbDwgFiler *pFiler) {
 //----- AcDbEntity protocols
 Adesk::Boolean CSSJoint2dElement::subWorldDraw (AcGiWorldDraw *mode) {
 	assertReadEnabled () ;
-	mode->geometry().mesh()
+	const Adesk::UInt32 faceListLength = 4;
+	static const Adesk::Int32 faceList[] = { 4, 0, 1, 2, 3 };
+	//pDeformedEntity->setColorIndex(DOCDATA.eleDfrmdColor);
+	AcGiFaceData faceData;
+	AcGiEdgeData edgeData;
+	short colors[1];
+	short edgeColors[4];
+	if (ObjUtils::getShowDeformed())
+	{
+		colors[0] = DOCDATA.eleDfrmdColor;
+		for (int i = 0; i < 4; i++)
+			edgeColors[i] = DOCDATA.eleDfrmdColor;
+		faceData.setColors(colors);
+		edgeData.setColors(edgeColors);
+		mode->geometry().shell(4, dfrmdVrtxList, faceListLength, faceList, &edgeData, &faceData);
+		if (DISPOPTIONS.dispUndeformedWire)
+		{
+			//colors[0] = DOCDATA.wireColor;
+			for (int i = 0; i < 4; i++)
+				edgeColors[i] = DOCDATA.wireColor;
+			faceData.setColors(colors);
+			edgeData.setColors(edgeColors);
+			mode->geometry().shell(4, vrtxList, faceListLength, faceList, &edgeData, &faceData);
+		}
+	}
+	else
+	{
+		colors[0] = DOCDATA.wireColor;
+		for (int i = 0; i < 4; i++)
+			edgeColors[i] = DOCDATA.wireColor;
+		faceData.setColors(colors);
+		edgeData.setColors(edgeColors);
+		mode->geometry().shell(4, vrtxList, faceListLength, faceList, &edgeData, &faceData);
+	}
+
 	if (DISPOPTIONS.dispEleTags)
 	{
 		AcGeVector3d vec(crds4-crds2);
 		AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 		AcGeVector3d up = vec.perpVector();
-		crds1 += 0.5*vec + 0.03*m_length*up;
+		AcGePoint3d crds = crds1 + 0.5*vec + 0.5*vec2;
 		AcString tagStr;
 		tagStr.format(_T("%d"), m_tag);
-		mode->geometry().text(crds1, normal, AcGeVector3d(1, 0, 0), DISPOPTIONS.tagSize, 1., 0, tagStr.kACharPtr());
+		mode->geometry().text(crds, normal, AcGeVector3d(1, 0, 0), DISPOPTIONS.tagSize, 1., 0, tagStr.kACharPtr());
 	}
 	return (CSSElement::subWorldDraw (mode)) ;
 }
@@ -207,7 +243,6 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
     plNode = CSSNode::cast(pObj);
     assert(pjNode != NULL);
 	
-	
 	if (useDeformedGeom)
 	{
 		crds1 = piNode->getDeformedCrds();
@@ -220,8 +255,39 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
 		crds3 = pkNode->getCrds();
 		crds4 = plNode->getCrds();
 	}
-	vec = crds3-crds1;
-	m_length = vec.length();
+	if (!initiated)
+	{
+		vec1 = (crds2 - crds4);
+		vec2 = (crds3 - crds1);
+		initiated = true;
+	}
+	m_length = 0.5*(vec1.length()+ vec2.length());
+	AcGeVector3d v1(vec1.normal()), v2(vec2.normal()), v3(v1), v4(v2);
+	if (useDeformedGeom)
+	{
+		v1.rotateBy(piNode->getRotation()[2], AcGeVector3d::kZAxis);
+		v2.rotateBy(pjNode->getRotation()[2], AcGeVector3d::kZAxis);
+		v3.rotateBy(pkNode->getRotation()[2], AcGeVector3d::kZAxis);
+		v4.rotateBy(plNode->getRotation()[2], AcGeVector3d::kZAxis);
+	}
+	AcGeLine3d line1(crds1, v1);
+	AcGeLine3d line2(crds2, v2);
+	AcGeLine3d line3(crds3, v3);
+	AcGeLine3d line4(crds4, v4);
+	if (useDeformedGeom)
+	{
+		res = line1.intersectWith(line2, dfrmdVrtxList[0]);
+		res = line2.intersectWith(line3, dfrmdVrtxList[1]);
+		res = line3.intersectWith(line4, dfrmdVrtxList[2]);
+		res = line4.intersectWith(line1, dfrmdVrtxList[3]);
+	}
+	else
+	{
+		res = line1.intersectWith(line2, vrtxList[0]);
+		res = line2.intersectWith(line3, vrtxList[1]);
+		res = line3.intersectWith(line4, vrtxList[2]);
+		res = line4.intersectWith(line1, vrtxList[3]);
+	}
 	m_isNull = false;
 
 	//piNode->setShiftVec(vec1);
@@ -231,16 +297,6 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
 	pkNode->close();
 	plNode->close();
 
-	if (pDeformedEntity == nullptr)
-	{
-		pDeformedEntity = new AcDbSpline(pntArr, vec, vec2, 3, 0);
-		pUndeformedEntity = new AcDbLine(pntArr.first(), pntArr.last());
-	}
-	else if (useDeformedGeom)
-	{
-		AcDbSpline* pSp = (AcDbSpline*)pDeformedEntity;
-		pSp->setFitData(pntArr, 3, 0, vec, vec2);
-	}
 	m_isNull = false;
 	return true;
 }

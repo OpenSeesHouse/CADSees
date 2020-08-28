@@ -82,6 +82,8 @@ double addElement(std::vector<std::string> line)
 	int tag = atoi(line[2].c_str());
 	int iNode = atoi(line[3].c_str());
 	int jNode = atoi(line[4].c_str());
+	int kNode = 0;
+	int lNode = 0;
 	int npnts = 0;
 	if (line[1].compare("dispBeamColumn") == 0 ||
 		line[1].compare("forceBeamColumn") == 0 ||
@@ -113,7 +115,12 @@ double addElement(std::vector<std::string> line)
 			npnts = atoi(line[8].c_str());
 		}
 	}
-	double l = ObjUtils::addElement(line[1], tag, iNode, jNode, npnts);
+	if (line[1].compare("Joint2D") == 0)
+	{
+		kNode = atoi(line[5].c_str());
+		lNode = atoi(line[6].c_str());
+	}
+	double l = ObjUtils::addElement(line[1], tag, iNode, jNode, npnts, kNode, lNode);
 	return l;
 }
 

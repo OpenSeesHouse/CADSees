@@ -76,7 +76,7 @@ void ObjUtils::addNode(int tag, AcGePoint3d pnt)
 	pBTR->close();
 }
 
-double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int nPnts)
+double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int nPnts, int kNode, int lNode)
 {
 	AcDbObjectId id;
 	if (getElement(&id, tag))
@@ -111,6 +111,9 @@ double ObjUtils::addElement(std::string type, int tag, int iNode, int jNode, int
 	} else if(type.compare("corotTruss") == 0)
 	{
 		pEle = new CSSCorotTruss(tag, iNode, jNode);
+	} else if(type.compare("Joint2D") == 0)
+	{
+		pEle = new CSSJoint2dElement(tag, iNode, jNode, kNode, lNode);
 	}
 
 	pEle->updateGeometry(false);
@@ -293,7 +296,7 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resids)
 		return;
 	}
 	AcDbEntity *pEnt;
-	CSSLineElement* pEle;
+	CSSElement* pEle;
 	bool found = false;
 	for(pIter->start(); !pIter->done(); pIter->step())
 	{
@@ -304,7 +307,7 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resids)
 			return;*/
 			continue;
 		}
-		pEle = CSSLineElement::cast(pEnt);
+		pEle = CSSElement::cast(pEnt);
 		if (pEle == NULL)
 		{
 			es = pEnt->close();
@@ -459,7 +462,7 @@ void ObjUtils::RedrawElementsGraphics(bool redrawBody)
 		AcDbObject* pObj;
 		ErrorStatus es = acdbOpenObject(pObj, resIds[i], kForWrite);
 		assert(pObj != NULL);
-		CSSLineElement* pEle = CSSLineElement::cast(pObj);
+		CSSElement* pEle = CSSElement::cast(pObj);
 		assert(pEle != NULL);
 		if (redrawBody)
 		{

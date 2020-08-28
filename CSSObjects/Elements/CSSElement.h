@@ -66,6 +66,7 @@ public:
 		res.push_back("zeroLength");
 		res.push_back("ModElasticBeam2d");
 		res.push_back("ModElasticBeam3d");
+		res.push_back("Joint2D");
 		return res;
 	}
 protected:

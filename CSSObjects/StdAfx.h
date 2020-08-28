@@ -62,6 +62,7 @@ extern AcApDataManager<CDocData> DocVars ;
 #include "Elements/CSSDispBeamColumn.h"
 #include "Elements/CSSModElasticBeamColumn.h"
 #include "Elements/CSSZeroLength.h"
+#include "Elements/CSSJoint2dElement.h"
 #include "Cube/CSSCube.h"
 
 #define DOCDATA DocVars.docData(curDoc())

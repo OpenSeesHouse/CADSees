@@ -59,7 +59,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSJoint2dElement () ;
-	CSSJoint2dElement (int tag, int inode, int jnode, std::string type) ;
+	CSSJoint2dElement (int tag, int inode, int jnode, int knode, int lnode) ;
 	virtual ~CSSJoint2dElement () ;
 
 	//- Dwg Filing protocol
@@ -77,14 +77,17 @@ protected:
 protected:
 	//AcDbCurve* pDeformedCurve;
 	//AcDbCurve* pUndeformedCurve;
-	Adesk::UInt32 m_iNod, m_jNod;
-	AcGePoint3d crds1, crds2;
-	AcGeVector3d vec;
+	Adesk::UInt32 m_iNod, m_jNod, m_kNod, m_lNod;
+	AcGePoint3d crds1, crds2, crds3, crds4;
+	AcGePoint3d vrtxList[4], dfrmdVrtxList[4];
+	AcGeVector3d vec1, vec2;
 	double m_length;
-	CSSNode *piNode, *pjNode;
+	CSSNode *piNode, *pjNode, *pkNode, *plNode;
 public:
-	virtual bool updateGeometry(bool useDeformedGeom);
+	virtual bool updateGeometry(bool useDeformedGeom) override;
 	virtual double getLength() const override;
+private:
+	bool initiated;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE
