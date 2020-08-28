@@ -97,6 +97,8 @@
     <ClCompile Include="Elements\CSSModElasticBeamColumn.cpp" />
     <ClCompile Include="Elements\CSSTruss.cpp" />
     <ClCompile Include="Elements\CSSZeroLength.cpp" />
+    <ClCompile Include="Matrix\Matrix.cpp" />
+    <ClCompile Include="Matrix\Vector.cpp" />
     <ClCompile Include="Node\CSSNode.cpp" />
     <ClCompile Include="ObjUtils\ObjUtils.cpp" />
     <ClCompile Include="Recorders\CSSNodeRecorder.cpp" />
@@ -120,6 +122,8 @@
     <ClInclude Include="Elements\CSSModElasticBeamColumn.h" />
     <ClInclude Include="Elements\CSSTruss.h" />
     <ClInclude Include="Elements\CSSZeroLength.h" />
+    <ClInclude Include="Matrix\Matrix.h" />
+    <ClInclude Include="Matrix\Vector.h" />
     <ClInclude Include="Node\CSSNode.h" />
     <ClInclude Include="ObjUtils\ObjUtils.h" />
     <ClInclude Include="Recorders\CSSNodeRecorder.h" />

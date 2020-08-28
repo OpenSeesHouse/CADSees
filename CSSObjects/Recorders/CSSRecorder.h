@@ -44,13 +44,14 @@
 #define DLLIMPEXP
 #endif
 
-#include <vector>
 #include <map>
+#include "Matrix/Matrix.h"
+#include "Matrix/Vector.h"
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
-#define VECTYPE std::vector<double>
+#define VECTYPE Vector
 #define NODENTRYKEY _T("CSSRecorders")
-#define fileDataType std::vector<std::vector<double>>
+#define fileDataType Matrix
 #define fileMapType std::map<AcString, fileDataType>
 //-----------------------------------------------------------------------------
 class DLLIMPEXP CSSRecorder : public AcDbObject {
@@ -76,12 +77,12 @@ protected:
 	Adesk::UInt32 m_dof;
 	AcString m_relFilePath;
 	Adesk::UInt32 m_dataColId;			//zero-based number of data column
-	VECTYPE* m_pRespVec;
+	VECTYPE m_respVec;
 	bool m_hasTime;
 	static bool readFileData(AcString file, std::string folder, bool hasTime);
 public:
 	static fileMapType m_fileMap;	//maps file names to collections of data columns (not data rows)
-	static VECTYPE* pTimeVec;
+	static VECTYPE timeVec;
 	static int lastTag;
 	//get functions
 	AcString getRelFilePath() const;
@@ -90,7 +91,7 @@ public:
 	int getDof() const;
 	int getObjTag() const;
 	bool getHasTime() const;			//used only to know if time data are provided in this recorder's file
-	static VECTYPE*& getTimeVec();
+	static VECTYPE& getTimeVec();
 	static int getLastTag();
 
 	void setDof(int val);

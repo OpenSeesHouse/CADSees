@@ -64,6 +64,8 @@ extern AcApDataManager<CDocData> DocVars ;
 #include "Elements/CSSZeroLength.h"
 #include "Elements/CSSJoint2dElement.h"
 #include "Cube/CSSCube.h"
+#include "Matrix/Matrix.h"
+#include "Matrix/Vector.h"
 
 #define DOCDATA DocVars.docData(curDoc())
 #define DISPOPTIONS DocVars.docData(curDoc()).dispOptions

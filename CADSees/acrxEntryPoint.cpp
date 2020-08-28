@@ -203,12 +203,12 @@ public:
 	static void CADSees_dispDeformedShape()
 	{
 	    CAcModuleResourceOverride resOverride;
-		VECTYPE *timeVec = CSSRecorder::getTimeVec();
+		VECTYPE timeVec = CSSRecorder::getTimeVec();
 		int num;
-		if (timeVec == 0)
+		if (timeVec.Size() == 0)
 			num = 0;
 		else
-			num = timeVec->size();
+			num = timeVec.Size();
 		DispDeformedDlg dlg(num, false, CWnd::FromHandle(adsw_acadMainWnd()));
 		INT_PTR val = dlg.DoModal();
 	}

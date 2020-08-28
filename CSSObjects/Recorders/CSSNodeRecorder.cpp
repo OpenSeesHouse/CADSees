@@ -89,7 +89,7 @@ Acad::ErrorStatus CSSNodeRecorder::dwgInFields (AcDbDwgFiler *pFiler) {
 bool CSSNodeRecorder::applySelf(double t)
 {
 	int i = 0;
-	size_t timeSize = pTimeVec->size();
+	int timeSize = timeVec.Size();
 	if (t == -1)
 	{
 		i = timeSize-1;
@@ -98,7 +98,7 @@ bool CSSNodeRecorder::applySelf(double t)
 	{
 		while(i < timeSize)
 		{
-			if (abs(pTimeVec->at(i)-t) < 1.e-6)
+			if (abs(timeVec(i)-t) < 1.e-6)
 				break;
 			i++;
 		}
@@ -108,7 +108,7 @@ bool CSSNodeRecorder::applySelf(double t)
 		acutPrintf(L"CSSNodeRecorder::applySelf-Failed to find requested time in pTimeVec");
 		return false;		
 	}
-	double value = m_pRespVec->at(i);
+	double value = m_respVec(i);
 
 	AcDbObjectId id;
 	if(!ObjUtils::getNode(&id, m_objTag))
@@ -131,10 +131,10 @@ bool CSSNodeRecorder::applySelf(int nStep)
 	if (nStep < 0)
 		nStep = 0;
 	double value;
-	if (nStep >= m_pRespVec->size())
+	if (nStep >= m_respVec.Size())
 		value = 0;
 	else
-		value = m_pRespVec->at(nStep);
+		value = m_respVec(nStep);
 	AcDbObjectId id;
 	if(!ObjUtils::getNode(&id, m_objTag))
 	{

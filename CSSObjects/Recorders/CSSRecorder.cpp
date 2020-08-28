@@ -27,8 +27,9 @@
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/device/file.hpp>
 #include <string>
-VECTYPE* CSSRecorder::pTimeVec = NULL;
+
 int CSSRecorder::lastTag = 0;
+VECTYPE CSSRecorder::timeVec(0);
 fileMapType CSSRecorder::m_fileMap;
 //-----------------------------------------------------------------------------
 Adesk::UInt32 CSSRecorder::kCurrentVersionNumber =1 ;
@@ -46,11 +47,11 @@ CADSees
 
 //-----------------------------------------------------------------------------
 CSSRecorder::CSSRecorder () : AcDbObject () {
-	m_pRespVec = 0;
+	m_respVec = 0;
 }
 
 CSSRecorder::CSSRecorder(int objTag, int dof, std::string path, int dataCol, bool hasTime) : AcDbObject (),
-	m_objTag(objTag), m_rcrdrTag(++lastTag), m_dof(dof), m_relFilePath(AcString(path.c_str(),AcString::Encoding::Utf8)), m_dataColId(dataCol), m_hasTime(hasTime), m_pRespVec(0)
+	m_objTag(objTag), m_rcrdrTag(++lastTag), m_dof(dof), m_relFilePath(AcString(path.c_str(),AcString::Encoding::Utf8)), m_dataColId(dataCol), m_hasTime(hasTime), m_respVec(0)
 {
 	
 }
@@ -162,16 +163,9 @@ bool CSSRecorder::readFileData(AcString filePath, std::string folder, bool hasTi
 	line = allLines[0];
 	std::vector<std::string> words = ObjUtils::pars(line, " ");
 	int nCols = words.size();
-	m_fileMap[filePath] = fileDataType(0);
+	m_fileMap[filePath] = Matrix(nLines, nCols);
 	fileDataType& theMatrix = m_fileMap[filePath];
-	theMatrix.reserve(nCols);
-	for (int i = 0; i < nCols; i++)
-	{
-		theMatrix.push_back(std::vector<double>(0));
-		theMatrix[i].reserve(nLines);
-	}
 
-	//while(getline (from,line,'\n'))
 	_CRT_DOUBLE  val;
 	for (int i = 0; i < nLines; i++)
 	{
@@ -190,12 +184,12 @@ bool CSSRecorder::readFileData(AcString filePath, std::string folder, bool hasTi
 					AcString(words[j].c_str(), AcString::Encoding::Utf8).kACharPtr());
 				return false;
 			}
-			theMatrix[j].push_back(val.x);
+			theMatrix(j,i) = val.x;
 		}
 	}
-	if (hasTime && pTimeVec == 0)
+	if (hasTime && timeVec.Size() == 0)
 	{
-		pTimeVec = &theMatrix[0];
+		timeVec = theMatrix[0];
 	}
 	return true;
 }
@@ -236,9 +230,9 @@ bool CSSRecorder::getHasTime() const
 	return m_hasTime;
 }
 
-VECTYPE*& CSSRecorder::getTimeVec()
+VECTYPE& CSSRecorder::getTimeVec()
 {
-	return pTimeVec;
+	return timeVec;
 }
 
 int CSSRecorder::getLastTag()
@@ -285,7 +279,7 @@ bool CSSRecorder::recordResponse(std::string folder)
 	if (m_fileMap.find(m_relFilePath) == m_fileMap.end())
 		if (! readFileData(m_relFilePath, folder, m_hasTime))
 			return false;
-	m_pRespVec = &m_fileMap[m_relFilePath][m_dataColId];
+	m_respVec = m_fileMap[m_relFilePath][m_dataColId];
 	return true;
 }
 

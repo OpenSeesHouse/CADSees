@@ -28,6 +28,9 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{3d3116a0-2ea1-4f6e-9130-7bc1ff4596d9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Matrix">
+      <UniqueIdentifier>{e87e92f2-7f2a-411d-aa8d-6439c12759b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp">
@@ -90,6 +93,12 @@
     <ClCompile Include="Elements\CSSJoint2dElement.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Matrix\Matrix.cpp">
+      <Filter>Matrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix\Vector.cpp">
+      <Filter>Matrix</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -148,6 +157,12 @@
     </ClInclude>
     <ClInclude Include="Elements\CSSJoint2dElement.h">
       <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix\Matrix.h">
+      <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix\Vector.h">
+      <Filter>Matrix</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

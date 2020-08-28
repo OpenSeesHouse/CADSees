@@ -263,11 +263,9 @@ double SetDeformedState(int n)
 	DISPOPTIONS.dispDeformedShape = true;
 	ObjUtils::setShowDeformed(true);
 	ObjUtils::RedrawGraphics(true);
-	VECTYPE *timeVec = CSSRecorder::getTimeVec();
-	if (timeVec == 0)
-		return 0;
-	if (timeVec->size() <= n)
+	VECTYPE timeVec = CSSRecorder::getTimeVec();
+	if (timeVec.Size() <= n)
 		return 0;
 	//acDocManager->sendStringToExecute(curDoc(), _T("REGEN "), false, false, false);
-	return timeVec->at(n);
+	return timeVec(n);
 }
