@@ -1,5 +1,53 @@
 #include "stdafx.h"
 #include "commands.h"
+
+AcDbObjectId getModelSpaceId()
+{
+	 ErrorStatus es;
+	 AcDbDatabase* pDwg = acdbHostApplicationServices()->workingDatabase();
+	 if (NULL == pDwg) {
+		  acedAlert(_T("getModelSpaceId::Could not get dataBase"));
+		  return (NULL);
+	 }
+
+	 AcDbBlockTable* pBlockTable;
+	 es = pDwg->getSymbolTable(pBlockTable, kForRead);
+	 if (eOk != es) {
+		  acedAlert(L"getModelSpaceId::Could not get block table");
+		  return (NULL);
+	 }
+
+	 AcDbObjectId id;
+	 es = pBlockTable->getAt(ACDB_MODEL_SPACE, id);
+	 if (eOk != es) {
+		  acedAlert(L"getModelSpaceId::Could not getAt()");
+		  pBlockTable->close();
+		  return (NULL);
+	 }
+	 es = pBlockTable->close();
+	 if (es != eOk)
+	 {
+		  acedAlert(_T("getModelSpaceId:: error closing symbol table"));
+		  return (NULL);
+	 }
+	 return id;
+}
+
+AcDbBlockTableRecord* getModelSpace(OpenMode mode)
+{
+	 ErrorStatus es;
+	 AcDbBlockTableRecord* pModelSpace;
+	 if (BTRID == NULL)
+		  BTRID = getModelSpaceId();
+	 es = actrTransactionManager->getObject((AcDbObject*&)pModelSpace, BTRID, mode);
+	 if (es != eOk)
+	 {
+		  acedAlert(_T("getModelSpace:: error getting pBTR from transaction"));
+		  return (NULL);
+	 }
+	 return (pModelSpace);
+}
+
 void setModel(std::vector<std::string> line)
 {
 	int ndm = 0, ndf = 0;
@@ -61,11 +109,13 @@ void addNode(std::vector<std::string> line)
 	ObjUtils::addNode(tag, pnt);
 }
 
-double addElement(std::vector<std::string> line)
+void addElement(std::vector<std::string> line)
 {
-	std::vector<std::string> suprtdElems = CSSElement::getSupportedEleList();
+	std::vector<int> eleNumNodes;
+	std::vector<std::string> suprtdElems = CSSElement::getSupportedEleList(eleNumNodes);
 	bool suprtd = false;
-	for (int i = 0; i < suprtdElems.size(); i++)
+	int i = 0;
+	for (; i < suprtdElems.size(); i++)
 	{
 		if (line[1].compare(suprtdElems[i]) == 0)
 		{
@@ -77,51 +127,16 @@ double addElement(std::vector<std::string> line)
 	{
 		acutPrintf(_T("Element Type: %s is not supported;\n"), AcString(line[1].c_str()).kACharPtr());
 		acutPrintf(_T("For a list of supported elements please visit %s\n"), WEBADDRESS);
-		return 0;
+		return;
 	}
+	int numNodes = eleNumNodes[i];
+	std::vector<int> nodeTags;
+	nodeTags.reserve(numNodes);
 	int tag = atoi(line[2].c_str());
-	int iNode = atoi(line[3].c_str());
-	int jNode = atoi(line[4].c_str());
-	int kNode = 0;
-	int lNode = 0;
+	for (i = 3; i < 3+numNodes; i++)
+		 nodeTags.push_back(atoi(line[i].c_str()));
 	int npnts = 0;
-	if (line[1].compare("dispBeamColumn") == 0 ||
-		line[1].compare("forceBeamColumn") == 0 ||
-		line[1].compare("nonlinearBeamColumn") == 0)
-	{
-		//obtain npnts;
-		if ((line[6].compare("Lobatto") != 0) &&
-			  (line[6].compare("Legendre") != 0) &&
-			  (line[6].compare("Radau") != 0) &&
-			  (line[6].compare("NewtonCotes") != 0) &&
-			  (line[6].compare("UserDefined") != 0) &&
-			  (line[6].compare("HingeMidpoint") != 0) &&
-			  (line[6].compare("HingeEndpoint") != 0) &&
-			  (line[6].compare("HingeRadau") != 0) &&
-			  (line[6].compare("HingeRadauTwo") != 0) &&
-			  (line[6].compare("UserHinge") != 0) &&
-			  (line[6].compare("DistHinge") != 0) &&
-			  (line[6].compare("RegularizedHinge") != 0) &&
-			  (line[6].compare("Trapezoidal") != 0) &&
-			  (line[6].compare("CompositeSimpson") != 0) &&
-			  (line[6].compare("FixedLocation") != 0) &&
-			  (line[6].compare("LowOrder") != 0) &&
-			  (line[6].compare("GaussQ") != 0) &&
-			  (line[6].compare("MidDistance") != 0))
-		{
-
-			npnts = atoi(line[5].c_str());
-		} else {
-			npnts = atoi(line[8].c_str());
-		}
-	}
-	if (line[1].compare("Joint2D") == 0)
-	{
-		kNode = atoi(line[5].c_str());
-		lNode = atoi(line[6].c_str());
-	}
-	double l = ObjUtils::addElement(line[1], tag, iNode, jNode, npnts, kNode, lNode);
-	return l;
+	ObjUtils::addElement(line[1], tag, nodeTags, line);
 }
 
 void addRecorder(std::vector<std::string> line)
@@ -181,7 +196,6 @@ void addRecorder(std::vector<std::string> line)
 		int k = 0;
 		for (int i = 0; i < tagList.size(); i++)
 		{
-			int ;
 			for (int j = 0; j < dofList.size(); j++)
 			{
 				dofs[k] = dofList[j];
@@ -203,11 +217,12 @@ void ReadResponse(std::string folder)
 	std::vector<AcDbObjectId> resIds;
 	ObjUtils::GetAllRecorders(resIds);
 	ErrorStatus es;
+	actrTransactionManager->startTransaction();
 	for (int i = 0; i < resIds.size(); i++)
 	{
 		AcDbObject* pObj = 0;
 		CSSRecorder* pRcrdr;
-		es = acdbOpenObject(pObj, resIds[i], kForWrite);
+		es = actrTransactionManager->getObject(pObj, resIds[i], kForWrite);
 		if (es != eOk)
 		{
 			acutPrintf(_T("Commands::ReadRecorders - error getting object"));
@@ -217,55 +232,81 @@ void ReadResponse(std::string folder)
 		if (pRcrdr == nullptr)
 		{
 			acutPrintf(_T("Commands::ReadRecorders - pRcrdr is null"));
-			pRcrdr->close();
 			continue;
 		}
 		if (!pRcrdr->recordResponse(folder))
 		{
-			pRcrdr->close();
 			return;
 		}
-		pRcrdr->applySelf(-1.);
-		pRcrdr->close();
+		pRcrdr->applySelf(-1., 1);
 	}
+	actrTransactionManager->endTransaction();
 	DISPOPTIONS.dispDeformedShape = true;
 	ObjUtils::setShowDeformed(true);
 	ObjUtils::RedrawGraphics(true);
 }
 
 
-double SetDeformedState(int n)
+double SetDeformedState(int n, double fac)
 {
 	std::vector<AcDbObjectId> resIds;
 	ObjUtils::GetAllRecorders(resIds);
 	ErrorStatus es;
+	actrTransactionManager->startTransaction();
 	for (int i = 0; i < resIds.size(); i++)
 	{
 		AcDbObject* pObj = 0;
 		CSSRecorder* pRcrdr;
-		es = acdbOpenObject(pObj, resIds[i], kForWrite);
+		es = actrTransactionManager->getObject(pObj, resIds[i], kForWrite);
 		if (es != eOk)
 		{
-			acutPrintf(_T("Commands::ReadRecorders - error getting object"));
-			continue;
+			acutPrintf(_T("SetDeformedState - error getting object"));
+			actrTransactionManager->abortTransaction();
+			return false;
 		}
 		pRcrdr = CSSRecorder::cast(pObj);
 		if (pRcrdr == nullptr)
 		{
 			acutPrintf(_T("Commands::ReadRecorders - pRcrdr is null"));
-			pRcrdr->close();
 			continue;
 		}
-		if (! pRcrdr->applySelf(n))
-			return false;
-		pRcrdr->close();
+		if (!pRcrdr->applySelf(n, fac))
+		{
+			 actrTransactionManager->abortTransaction();
+			 return false;
+		}
 	}
+	actrTransactionManager->endTransaction();
 	DISPOPTIONS.dispDeformedShape = true;
 	ObjUtils::setShowDeformed(true);
 	ObjUtils::RedrawGraphics(true);
-	VECTYPE timeVec = CSSRecorder::getTimeVec();
+	Vector timeVec = CSSRecorder::getTimeVec();
 	if (timeVec.Size() <= n)
 		return 0;
 	//acDocManager->sendStringToExecute(curDoc(), _T("REGEN "), false, false, false);
 	return timeVec(n);
+}
+
+void addPile(std::vector<std::string> line)
+{
+	 AcGePoint3d pt1, pt2;
+	 pt1.x = atof(line[1].c_str());
+	 pt1.y = atof(line[2].c_str());
+	 pt1.z = atof(line[3].c_str());
+	 pt2.x = atof(line[4].c_str());
+	 pt2.y = atof(line[5].c_str());
+	 pt2.z = atof(line[6].c_str());
+	 ObjUtils::addPile(pt1, pt2);
+}
+
+void addCube(std::vector<std::string> line)
+{
+	 AcGePoint3d pt1;
+	 pt1.x = atof(line[1].c_str());
+	 pt1.y = atof(line[2].c_str());
+	 pt1.z = atof(line[3].c_str());
+	 double szx = atof(line[4].c_str());
+	 double szy = atof(line[5].c_str());
+	 double szz = atof(line[6].c_str());
+	 ObjUtils::addCube(pt1, szx, szy, szz);
 }

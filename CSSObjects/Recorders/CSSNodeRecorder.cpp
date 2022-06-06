@@ -86,7 +86,7 @@ Acad::ErrorStatus CSSNodeRecorder::dwgInFields (AcDbDwgFiler *pFiler) {
 	return (pFiler->filerStatus ()) ;
 }
 
-bool CSSNodeRecorder::applySelf(double t)
+bool CSSNodeRecorder::applySelf(double t, double fac)
 {
 	int i = 0;
 	int timeSize = timeVec.Size();
@@ -108,25 +108,24 @@ bool CSSNodeRecorder::applySelf(double t)
 		acutPrintf(L"CSSNodeRecorder::applySelf-Failed to find requested time in pTimeVec");
 		return false;		
 	}
-	double value = m_respVec(i);
+	double value = m_respVec(i)*fac;
 
 	AcDbObjectId id;
-	if(!ObjUtils::getNode(&id, m_objTag))
+	if(!ObjUtils::getNode(id, m_objTag))
 	{
 		acutPrintf(_T("CSSNodeRecorder::applySelf-Failed to getNode() with tag %d"), m_objTag);
 		return false;
 	}
 	AcDbObject* obj;
-	ErrorStatus es = acdbOpenObject(obj, id, OpenMode::kForWrite);
+	ErrorStatus es = actrTransactionManager->getObject(obj, id, OpenMode::kForWrite);
 	assert(obj != NULL);
 	CSSNode* pNode = CSSNode::cast(obj);
 	assert(pNode != NULL);
 	pNode->setDeformationAt(m_dof, value);
-	pNode->close();
 	return true;
 }
 
-bool CSSNodeRecorder::applySelf(int nStep)
+bool CSSNodeRecorder::applySelf(int nStep, double fac)
 {
 	if (nStep < 0)
 		nStep = 0;
@@ -134,19 +133,18 @@ bool CSSNodeRecorder::applySelf(int nStep)
 	if (nStep >= m_respVec.Size())
 		value = 0;
 	else
-		value = m_respVec(nStep);
+		value = m_respVec(nStep)*fac;
 	AcDbObjectId id;
-	if(!ObjUtils::getNode(&id, m_objTag))
+	if(!ObjUtils::getNode(id, m_objTag))
 	{
 		acutPrintf(_T("CSSNodeRecorder::applySelf-Failed to getNode() with tag %d"), m_objTag);
 		return false;
 	}
 	AcDbObject* obj;
-	ErrorStatus es = acdbOpenObject(obj, id, OpenMode::kForWrite);
+	ErrorStatus es = actrTransactionManager->getObject(obj, id, OpenMode::kForWrite);
 	assert(obj != NULL);
 	CSSNode* pNode = CSSNode::cast(obj);
 	assert(pNode != NULL);
 	pNode->setDeformationAt(m_dof, value);
-	pNode->close();
 	return true;
 }

@@ -20,19 +20,19 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- CSSTruss.cpp : Implementation of CSSTruss
+//----- CSSTwoNodeLink.cpp : Implementation of CSSTwoNodeLink
 //-----------------------------------------------------------------------------
 #include "stdafx.h"
-#include "CSSTruss.h"
+#include "CSSTwoNodeLink.h"
 
 //-----------------------------------------------------------------------------
-Adesk::UInt32 CSSTruss::kCurrentVersionNumber =1 ;
+Adesk::UInt32 CSSTwoNodeLink::kCurrentVersionNumber =1 ;
 
 //-----------------------------------------------------------------------------
 ACRX_DXF_DEFINE_MEMBERS (
-	CSSTruss, CSSLineElement,
+	CSSTwoNodeLink, CSSLineElement,
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
-	AcDbProxyEntity::kNoOperation, CSS_truss,
+	AcDbProxyEntity::kNoOperation, CSS_elasticBeamColumn,
 CADSees
 |Product Desc:     An OpenSees pre/post-processor
 |Company:          Civil Soft Science
@@ -40,76 +40,50 @@ CADSees
 )
 
 //-----------------------------------------------------------------------------
-CSSTruss::CSSTruss () : CSSLineElement () {
-	m_type = AcString(_T("truss"));
+CSSTwoNodeLink::CSSTwoNodeLink () : CSSLineElement () {
+	m_type = AcString(_T("twoNodeLink"));
 }
 
-CSSTruss::CSSTruss(int tag, std::vector<int> nodeTags): CSSLineElement (tag, nodeTags[0], nodeTags[1], "truss")
+CSSTwoNodeLink::CSSTwoNodeLink(int tag, std::vector<int> nodeTags): CSSLineElement (tag, nodeTags[0], nodeTags[1], "twoNodeLink")
 {
 }
 
-CSSTruss::~CSSTruss () {
-	if (pDeformedEntity != 0)
-		delete pDeformedEntity;
-	if (pUndeformedEntity != 0)
-		delete pUndeformedEntity;
+CSSTwoNodeLink::~CSSTwoNodeLink () {
 }
 
 //-----------------------------------------------------------------------------
 //----- AcDbObject protocols
 //- Dwg Filing protocol
-Acad::ErrorStatus CSSTruss::dwgOutFields (AcDbDwgFiler *pFiler) const {
+Acad::ErrorStatus CSSTwoNodeLink::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	assertReadEnabled () ;
 	//----- Save parent class information first.
-	Acad::ErrorStatus es = CSSLineElement::dwgOutFields (pFiler) ;
+	Acad::ErrorStatus es =CSSLineElement::dwgOutFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSTruss::kCurrentVersionNumber)) != Acad::eOk )
+	if ( (es =pFiler->writeUInt32 (CSSTwoNodeLink::kCurrentVersionNumber)) != Acad::eOk )
 		return (es) ;
 	//----- Output params
 
 	return (pFiler->filerStatus ()) ;
 }
 
-Acad::ErrorStatus CSSTruss::dwgInFields (AcDbDwgFiler *pFiler) {
+Acad::ErrorStatus CSSTwoNodeLink::dwgInFields (AcDbDwgFiler *pFiler) {
 	assertWriteEnabled () ;
 	//----- Read parent class information first.
-	Acad::ErrorStatus es = CSSLineElement::dwgInFields (pFiler) ;
+	Acad::ErrorStatus es =CSSLineElement::dwgInFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be read first
 	Adesk::UInt32 version =0 ;
 	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
 		return (es) ;
-	if ( version > CSSTruss::kCurrentVersionNumber )
+	if ( version > CSSTwoNodeLink::kCurrentVersionNumber )
 		return (Acad::eMakeMeProxy) ;
 	//- Uncomment the 2 following lines if your current object implementation cannot
 	//- support previous version of that object.
-	//if ( version < CSSTruss::kCurrentVersionNumber )
+	//if ( version < CSSTwoNodeLink::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
 	return (pFiler->filerStatus ()) ;
-}
-
-bool CSSTruss::updateGeometry(bool useDeformedGeom)
-{
-	assertWriteEnabled(false, true);
-	bool res = CSSLineElement::updateGeometry(useDeformedGeom);
-	if (!res)
-		return false;
-
-	if (pDeformedEntity == nullptr)
-	{
-		pDeformedEntity = new AcDbLine(crds1, crds2);
-		pUndeformedEntity = new AcDbLine(crds1, crds2);
-	}
-	else if (useDeformedGeom)
-	{
-		AcDbLine* pLine = (AcDbLine*)pDeformedEntity;
-		pLine->setStartPoint(crds1);
-		pLine->setEndPoint(crds2);
-	}
-	m_isNull = false;
-	return true;
 }

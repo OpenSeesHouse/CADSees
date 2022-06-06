@@ -99,7 +99,8 @@ public:
 		AcDbGripDataPtrArray &grips, const double curViewUnitSize, const int gripSize, 
 		const AcGeVector3d &curViewDir, const int bitflags) const ;
 	virtual Acad::ErrorStatus subMoveGripPointsAt (const AcDbVoidPtrArray &gripAppData, const AcGeVector3d &offset, const int bitflags) ;
-	void subList() const override;
+	virtual void subList() const override;
+	virtual Acad::ErrorStatus subErase(Adesk::Boolean pErasing);
 	void setDeformationAt(int dof, double value);
 	void updateDeformedGeometry();
 protected:

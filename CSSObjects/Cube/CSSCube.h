@@ -59,6 +59,7 @@ public:
 	CSSCube () ;
 	CSSCube (CSSCube*& pCube) ;
 	CSSCube (AcGePoint3d crds, double size) ;
+	CSSCube (AcGePoint3d vertex, double sizeX, double sizeY, double sizeZ) ;
 	virtual ~CSSCube () ;
 
 	//----- AcDbObject protocols
@@ -79,14 +80,15 @@ public:
 	void setCrds(AcGePoint3d pnt);
 	void setSize(double val);
 	AcGePoint3d getCrds() const;
-	double getSize() const;
+	void getSize(double* x, double* y, double* z) const;
 	AcGePoint3d *& getVertexList();
 	Adesk::Int32*& getFaceList();
 protected:
 	AcGePoint3d m_crds;
 	AcGePoint3d *pVertexList; 
 	Adesk::Int32* pFaceList;
-	double m_size;
+	double m_sizeX, m_sizeY, m_sizeZ;
+	bool m_useVertex;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE

@@ -31,6 +31,9 @@
     <Filter Include="Matrix">
       <UniqueIdentifier>{e87e92f2-7f2a-411d-aa8d-6439c12759b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pile">
+      <UniqueIdentifier>{155e7931-0b8c-44cb-a6b2-1fe0d9ae1cf3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StdAfx.cpp">
@@ -99,6 +102,15 @@
     <ClCompile Include="Matrix\Vector.cpp">
       <Filter>Matrix</Filter>
     </ClCompile>
+    <ClCompile Include="Pile\CSSPile.cpp">
+      <Filter>Pile</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSBrickElement.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
+    <ClCompile Include="Elements\CSSTwoNodeLink.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -163,6 +175,15 @@
     </ClInclude>
     <ClInclude Include="Matrix\Vector.h">
       <Filter>Matrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Pile\CSSPile.h">
+      <Filter>Pile</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSBrickElement.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\CSSTwoNodeLink.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

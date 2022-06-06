@@ -32,12 +32,12 @@ AcApDataManager<CDocData> DocVars ;
 //-----------------------------------------------------------------------------
 //----- Implementation of the document data class.
 CDocData::CDocData () {
-	dispOptions.dispNodeTags = true;
-	dispOptions.dispEleTags = true;
+	dispOptions.dispNodeTags = false;
+	dispOptions.dispEleTags = false;
 	dispOptions.dispDeformedShape = false;
 	dispOptions.dispUndeformedWire = true;
-	dispOptions.tagSize = 20;
-	dispOptions.nodeSize = 20;
+	dispOptions.tagSize = 0.15;
+	dispOptions.nodeSize = 0.05;
 	dispOptions.nodeSizeChanged = false;
 	NDM = 0;
 	NDOF = 0;
@@ -46,6 +46,7 @@ CDocData::CDocData () {
 	eleDfrmdColor = 4;
 	nodeColor = 7;
 	nodeDfrmdColor = 30;
+	btrId = NULL;
 }
 
 //-----------------------------------------------------------------------------

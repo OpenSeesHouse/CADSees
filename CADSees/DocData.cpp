@@ -33,12 +33,17 @@ AcApDataManager<CDocData> DocVars ;
 //----- Implementation of the document data class.
 CDocData::CDocData () {
 	inputFile = "";
-	dispOptions.dispNodeTags = true;
-	dispOptions.dispEleTags = true;
+	lengthUnit = LengthUnit::m;
+	lengthFac = 1.0;
+	dispOptions.dispNodeTags = false;
+	dispOptions.dispEleTags = false;
 	dispOptions.dispDeformedShape = false;
-	dispOptions.tagSize = 0;
-	dispOptions.nodeSize = 0;
 	dispOptions.dispUndeformedWire = true;
+	dispOptions.defTagSize = 0.15;		 //in m
+	dispOptions.tagSize = 0.15;
+	dispOptions.defNodeSize = 0.05;		 //in m
+	dispOptions.nodeSize = 0.05;
+	btrId = NULL;
 }
 
 //-----------------------------------------------------------------------------

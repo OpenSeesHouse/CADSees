@@ -103,6 +103,12 @@ Acad::ErrorStatus CSSElement::dwgInFields (AcDbDwgFiler *pFiler) {
 	if ( (es =pFiler->readString (m_type)) != Acad::eOk )
 		return (es) ;
 	m_isNull = false;
+	std::map<int, AcDbObjectId>::iterator it = ELEMATTAGMAP.find(m_tag);
+	if (it == ELEMATTAGMAP.end())
+	{
+		 ELEMATTAGMAP.insert(std::pair<int, AcDbObjectId>(m_tag, this->objectId()));
+	}
+
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -114,6 +120,17 @@ void CSSElement::subList() const
 	acutPrintf(_T("\n***CADSees***"));
 	acutPrintf(_T("\n	Element type: %s"), m_type.kACharPtr());
 	acutPrintf(_T("\n   tag:\t\t%d"), m_tag);
+}
+
+Acad::ErrorStatus CSSElement::subErase(Adesk::Boolean pErasing)
+{
+	 std::map<int, AcDbObjectId>::iterator it = ELEMATTAGMAP.find(m_tag);
+	 if (it != ELEMATTAGMAP.end())
+	 {
+		  ELEMATTAGMAP.erase(it);
+	 }
+
+	 return AcDbEntity::subErase(pErasing);
 }
 
 int CSSElement::getTag() const

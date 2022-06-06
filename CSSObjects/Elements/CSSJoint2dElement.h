@@ -59,7 +59,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSJoint2dElement () ;
-	CSSJoint2dElement (int tag, int inode, int jnode, int knode, int lnode) ;
+	CSSJoint2dElement (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSJoint2dElement () ;
 
 	//- Dwg Filing protocol

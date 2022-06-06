@@ -60,7 +60,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSDispBeamColumn () ;
-	CSSDispBeamColumn (int tag, int inode, int jnode, int nIntegPnts) ;
+	CSSDispBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
 	virtual ~CSSDispBeamColumn () ;
 
 	//----- AcDbObject protocols

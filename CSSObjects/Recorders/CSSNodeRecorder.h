@@ -66,8 +66,8 @@ public:
 	//- Dwg Filing protocol
 	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
 	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-	virtual bool applySelf(double t);		//to be implemented by derived classes
-	virtual bool applySelf(int nStep);		//to be implemented by derived classes
+	virtual bool applySelf(double t, double fac);		//to be implemented by derived classes
+	virtual bool applySelf(int nStep, double fac);		//to be implemented by derived classes
 
 } ;
 

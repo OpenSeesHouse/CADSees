@@ -84,6 +84,9 @@ namespace CADSeesLoader
             //ed.WriteMessage("\n3");
             String arxPath = path + "\\CADSees.arx";
             String dbxPath = path + "\\CSSObjects.dbx";
+#if DEBUG
+            dbxPath = path + "\\Objects\\CSSObjects.dbx";
+#endif
             DynamicLinker DL = SystemObjects.DynamicLinker;
             DL.LoadModule(dbxPath, false, false);
             //ed.WriteMessage("\n4");

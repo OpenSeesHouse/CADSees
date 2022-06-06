@@ -28,7 +28,7 @@
 
 //-----------------------------------------------------------------------------
 //----- Here you can store the document / database related data.
-#define WEBADDRESS _T("www.CivilSoftScience.com")
+#define WEBADDRESS _T("www.OpenSeesHouse.com")
 struct DispOptions
 {
 	bool dispNodeTags;
@@ -56,5 +56,9 @@ public:
 	Adesk::UInt32 nodeColor;
 	Adesk::UInt32 eleDfrmdColor;
 	Adesk::UInt32 nodeDfrmdColor;
+	AcDbObjectId btrId;
+	std::multimap<AcString, int> nodeAtCrdsMap;
+	std::map<int, AcDbObjectId> nodeAtTagMap;
+	std::map<int, AcDbObjectId> elemAtTagMap;
 
 } ;

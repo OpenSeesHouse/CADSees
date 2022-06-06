@@ -29,8 +29,8 @@
 #include <string>
 
 int CSSRecorder::lastTag = 0;
-VECTYPE CSSRecorder::timeVec(0);
-fileMapType CSSRecorder::m_fileMap;
+Vector CSSRecorder::timeVec(0);
+std::map<AcString, Matrix*> CSSRecorder::m_fileMap;
 //-----------------------------------------------------------------------------
 Adesk::UInt32 CSSRecorder::kCurrentVersionNumber =1 ;
 
@@ -163,8 +163,8 @@ bool CSSRecorder::readFileData(AcString filePath, std::string folder, bool hasTi
 	line = allLines[0];
 	std::vector<std::string> words = ObjUtils::pars(line, " ");
 	int nCols = words.size();
-	m_fileMap[filePath] = Matrix(nLines, nCols);
-	fileDataType& theMatrix = m_fileMap[filePath];
+	m_fileMap[filePath] = new Matrix(nLines, nCols);
+	Matrix& theMatrix = *m_fileMap[filePath];
 
 	_CRT_DOUBLE  val;
 	for (int i = 0; i < nLines; i++)
@@ -230,7 +230,7 @@ bool CSSRecorder::getHasTime() const
 	return m_hasTime;
 }
 
-VECTYPE& CSSRecorder::getTimeVec()
+Vector& CSSRecorder::getTimeVec()
 {
 	return timeVec;
 }
@@ -264,12 +264,12 @@ void CSSRecorder::setDataCol(int dataCol)
 	m_dataColId = dataCol;
 }
 
-bool CSSRecorder::applySelf(double t)
+bool CSSRecorder::applySelf(double t, double fac)
 {
 	return false;
 }
 
-bool CSSRecorder::applySelf(int nStep)
+bool CSSRecorder::applySelf(int nStep, double fac)
 {
 	return false;
 }
@@ -279,7 +279,8 @@ bool CSSRecorder::recordResponse(std::string folder)
 	if (m_fileMap.find(m_relFilePath) == m_fileMap.end())
 		if (! readFileData(m_relFilePath, folder, m_hasTime))
 			return false;
-	m_respVec = m_fileMap[m_relFilePath][m_dataColId];
+	Matrix* mat = m_fileMap[m_relFilePath];
+	m_respVec = (*mat)[m_dataColId];
 	return true;
 }
 

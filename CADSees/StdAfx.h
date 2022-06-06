@@ -67,6 +67,7 @@
 //#define _ARX_CUSTOM_DRAG_N_DROP_	//- Support for the ObjectARX Drag'n Drop API
 //#define _INC_LEAGACY_HEADERS_			//- Include legacy headers in this project
 #include "arxHeaders.h"
+#include "acedCmdNF.h"
 
 
 //-----------------------------------------------------------------------------
@@ -78,8 +79,12 @@
 #include "../CSSObjects/Node/CSSNode.h"
 #include "../CSSObjects/Cube/CSSCube.h"
 
+#define DOCDATA DocVars.docData(curDoc())
 #define INPUTFILE DocVars.docData(curDoc()).inputFile
 #define DISPOPTIONS DocVars.docData(curDoc()).dispOptions
+#define LENGTHUNIT DocVars.docData(curDoc()).lengthUnit
+#define LENGTHFAC DocVars.docData(curDoc()).lengthFac
+#define BTRID DocVars.docData(curDoc()).btrId
 
 
 //- Declare it as an extern here so that it becomes available in all modules

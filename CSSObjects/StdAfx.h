@@ -58,16 +58,23 @@ extern AcApDataManager<CDocData> DocVars ;
 #include "Elements/CSSTruss.h"
 #include "Elements/CSSCorotTruss.h"
 #include "Elements/CSSElasticBeamColumn.h"
+#include "Elements/CSSTwoNodeLink.h"
 #include "Elements/CSSForceBeamColumn.h"
 #include "Elements/CSSDispBeamColumn.h"
 #include "Elements/CSSModElasticBeamColumn.h"
 #include "Elements/CSSZeroLength.h"
 #include "Elements/CSSJoint2dElement.h"
+#include "Elements/CSSBrickElement.h"
 #include "Cube/CSSCube.h"
+#include "Pile/CSSPile.h"
 #include "Matrix/Matrix.h"
 #include "Matrix/Vector.h"
 
 #define DOCDATA DocVars.docData(curDoc())
 #define DISPOPTIONS DocVars.docData(curDoc()).dispOptions
+#define BTRID DocVars.docData(curDoc()).btrId
+#define NODEATCRDSMAP DocVars.docData(curDoc()).nodeAtCrdsMap
+#define NODEATTAGMAP DocVars.docData(curDoc()).nodeAtTagMap
+#define ELEMATTAGMAP DocVars.docData(curDoc()).elemAtTagMap
 #pragma pack (pop)
 

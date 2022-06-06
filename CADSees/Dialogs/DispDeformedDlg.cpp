@@ -10,6 +10,7 @@
 IMPLEMENT_DYNAMIC(DispDeformedDlg, CAcUiDialog)
 
 DispDeformedDlg::DispDeformedDlg(int numSteps, bool hasEnvRcrdr, CWnd* pParent, HINSTANCE hInstance) : CAcUiDialog (DispDeformedDlg::IDD, pParent, hInstance)
+, m_scaleFac(1.0)
 , m_numSteps(numSteps)
 , m_respTimeStr(_T(""))
 , m_lastStepStr(_T(""))
@@ -35,6 +36,7 @@ void DispDeformedDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Check(pDX, IDC_DISP_DEFORMED_CHECK2, m_dispWire);
 	DDX_Text(pDX, IDC_RESP_STEP_EDIT, m_respStep);
 	DDX_Control(pDX, IDC_RESP_STEP_SPIN, m_stepSpin);
+	DDX_Text(pDX, IDC_SCALE_FAC_EDIT, m_scaleFac);
 	DDX_Control(pDX, IDC_RESP_STEP_SLIDER, m_stepSlider);
 	DDX_Control(pDX, IDC_DISP_DEFORMED_CHECK, m_dispDeformedCheck);
 	DDX_Control(pDX, IDC_DISP_DEFORMED_CHECK2, m_dispWireCheck);
@@ -64,7 +66,7 @@ BOOL DispDeformedDlg::OnInitDialog()
 		m_dispDeformedCheck.SetCheck(1);		
 		m_stepSlider.SetPos(1);
 		m_stepSpin.SetPos(1);
-		double t = SetDeformedState(0);
+		double t = SetDeformedState(0, 1);
 		acedUpdateDisplay();
 		m_respTimeStr.Format(_T("%.3f"), t);
 	}
@@ -74,6 +76,7 @@ BOOL DispDeformedDlg::OnInitDialog()
 
 BEGIN_MESSAGE_MAP(DispDeformedDlg, CAcUiDialog)
 	ON_MESSAGE(WM_ACAD_KEEPFOCUS, OnAcadKeepFocus)
+	ON_EN_KILLFOCUS(IDC_SCALE_FAC_EDIT, &DispDeformedDlg::OnEnChangeScaleFacEdit)
 	ON_EN_CHANGE(IDC_RESP_STEP_EDIT, &DispDeformedDlg::OnEnChangeRespStepEdit)
 	ON_NOTIFY(TRBN_THUMBPOSCHANGING, IDC_RESP_STEP_SLIDER, &DispDeformedDlg::OnTRBNThumbPosChangingRespStepSlider)
 	ON_BN_CLICKED(IDC_DISP_DEFORMED_CHECK, &DispDeformedDlg::OnBnClickedDispDeformedCheck)
@@ -95,7 +98,24 @@ void DispDeformedDlg::OnEnChangeRespStepEdit()
 	if (!m_initiated)
 		return;
 	UpdateData(TRUE);
-	double t = SetDeformedState(m_respStep-1);
+	double t = SetDeformedState(m_respStep-1, m_scaleFac);
+	acedUpdateDisplay();
+	m_respTimeStr.Format(_T("%.3f"), t);
+	m_stepSlider.SetPos(m_respStep);
+	UpdateData(FALSE);
+}
+
+void DispDeformedDlg::OnEnChangeScaleFacEdit()
+{
+	// TODO:  If this is a RICHEDIT control, the control will not
+	// send this notification unless you override the CAcUiDialog::OnInitDialog()
+	// function and call CRichEditCtrl().SetEventMask()
+	// with the ENM_CHANGE flag ORed into the mask.
+
+	if (!m_initiated)
+		return;
+	UpdateData(TRUE);
+	double t = SetDeformedState(m_respStep-1, m_scaleFac);
 	acedUpdateDisplay();
 	m_respTimeStr.Format(_T("%.3f"), t);
 	m_stepSlider.SetPos(m_respStep);

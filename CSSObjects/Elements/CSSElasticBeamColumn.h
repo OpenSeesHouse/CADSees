@@ -60,7 +60,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSElasticBeamColumn () ;
-	CSSElasticBeamColumn (int tag, int inode, int jnode, int nIntegPnts) ;
+	CSSElasticBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
 	virtual ~CSSElasticBeamColumn () ;
 
 	//----- AcDbObject protocols

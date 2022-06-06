@@ -44,7 +44,7 @@ CSSDispBeamColumn::CSSDispBeamColumn () : CSSBeamElement () {
 	m_type = AcString(_T("dispBeamColumn"));
 }
 
-CSSDispBeamColumn::CSSDispBeamColumn(int tag, int inode, int jnode, int nIntegPnts): CSSBeamElement (tag, inode, jnode, nIntegPnts, "dispBeamColumn")
+CSSDispBeamColumn::CSSDispBeamColumn(int tag, std::vector<int> nodeTags, int nIntegPnts): CSSBeamElement (tag, nodeTags[0], nodeTags[1], nIntegPnts, "dispBeamColumn")
 {
 }
 

@@ -44,7 +44,7 @@ CSSCorotTruss::CSSCorotTruss () : CSSTruss () {
 	m_type = AcString(_T("corotTruss"));
 }
 
-CSSCorotTruss::CSSCorotTruss(int tag, int inode, int jnode): CSSTruss (tag, inode, jnode)
+CSSCorotTruss::CSSCorotTruss(int tag, std::vector<int> nodeTags): CSSTruss (tag, nodeTags)
 {
 	m_type = AcString(_T("corotTruss"));
 }

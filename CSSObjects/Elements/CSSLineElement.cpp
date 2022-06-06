@@ -140,49 +140,50 @@ double CSSLineElement::getLength() const
 
 bool CSSLineElement::updateGeometry(bool useDeformedGeom)
 {
-	assertWriteEnabled(false, true);
-	bool res = CSSElement::updateGeometry(useDeformedGeom);
-	if (!res)
-		return false;
-	AcDbObjectId id;
-	if (!ObjUtils::getNode(&id, m_iNod))
-	{
-		acutPrintf(_T("CSSLineElement:ERROR finding node object"));
-		return false;
-	}
-	AcDbObject   *pObj = NULL;
-	ErrorStatus es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    piNode = CSSNode::cast(pObj);
-    assert(piNode != NULL);
+	 assertWriteEnabled(false, true);
+	 bool res = CSSElement::updateGeometry(useDeformedGeom);
+	 if (!res)
+		  return false;
+	 AcDbObjectId id;
+	 if (!ObjUtils::getNode(id, m_iNod))
+	 {
+		  acutPrintf(_T("CSSLineElement:ERROR finding node object"));
+		  return false;
+	 }
+	 AcDbObject* pObj = NULL;
+	 ErrorStatus es = acdbOpenObject(pObj, id, AcDb::kForRead);
+	 assert(pObj != NULL);
+	 piNode = CSSNode::cast(pObj);
+	 assert(piNode != NULL);
 
-	if (!ObjUtils::getNode(&id, m_jNod))
-	{
-		acutPrintf(_T("CSSLineElement:ERROR finding node object"));
-		piNode->close();
-		return false;
-	}
-	pObj = NULL;
-	es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    pjNode = CSSNode::cast(pObj);
-    assert(pjNode != NULL);
-	if (useDeformedGeom)
-	{
-		crds1 = piNode->getDeformedCrds();
-		crds2 = pjNode->getDeformedCrds();
-	} else {
-		crds1 = piNode->getCrds();
-		crds2 = pjNode->getCrds();
-	}
-	vec = crds2-crds1;
-	m_length = vec.length();
-	m_isNull = false;
+	 if (!ObjUtils::getNode(id, m_jNod))
+	 {
+		  acutPrintf(_T("CSSLineElement:ERROR finding node object"));
+		  piNode->close();
+		  return false;
+	 }
+	 pObj = NULL;
+	 es = acdbOpenObject(pObj, id, AcDb::kForRead);
+	 assert(pObj != NULL);
+	 pjNode = CSSNode::cast(pObj);
+	 assert(pjNode != NULL);
+	 if (useDeformedGeom)
+	 {
+		  crds1 = piNode->getDeformedCrds();
+		  crds2 = pjNode->getDeformedCrds();
+	 }
+	 else {
+		  crds1 = piNode->getCrds();
+		  crds2 = pjNode->getCrds();
+	 }
+	 vec = crds2 - crds1;
+	 m_length = vec.length();
+	 m_isNull = false;
 
-	//piNode->setShiftVec(vec1);
-	//pjNode->setShiftVec(-vec2);
-	piNode->close();
-	pjNode->close();
+	 //piNode->setShiftVec(vec1);
+	 //pjNode->setShiftVec(-vec2);
+	 piNode->close();
+	 pjNode->close();
 
-	return true;
+	 return true;
 }

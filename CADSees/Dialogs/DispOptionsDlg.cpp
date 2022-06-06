@@ -113,7 +113,7 @@ void DispOptionsDlg::OnEnChangeTagSizeEdit()
 	UpdateData(TRUE);
 	if (m_tagSizeScale < 1)
 		m_tagSizeScale = 1;
-	double val = DISPOPTIONS.tagSize;
+	double val = DISPOPTIONS.defTagSize;
 	val *= (double)m_tagSizeScale/100.0;
 	ObjUtils::setTagsSize(val);
 	ObjUtils::RedrawGraphics(false);
@@ -132,7 +132,7 @@ void DispOptionsDlg::OnEnChangeNodeSizeEdit()
 	UpdateData(TRUE);
 	if (m_nodeSizeScale < 1)
 		m_nodeSizeScale = 1;
-	double val = DISPOPTIONS.nodeSize;
+	double val = DISPOPTIONS.defNodeSize;
 	val *= (double)m_nodeSizeScale/100.0;
 	ObjUtils::setNodesSize(val);
 	ObjUtils::RedrawNodeGraphics(true);
@@ -141,7 +141,7 @@ void DispOptionsDlg::OnEnChangeNodeSizeEdit()
 
 void DispOptionsDlg::OnCancel()
 {
-	DISPOPTIONS.nodeSize *= (double)m_nodeSizeScale/100.;
-	DISPOPTIONS.tagSize *= (double)m_tagSizeScale/100.0;
+	DISPOPTIONS.nodeSize = DISPOPTIONS.defNodeSize * (double)m_nodeSizeScale/100.;
+	DISPOPTIONS.tagSize = DISPOPTIONS.defTagSize * (double)m_tagSizeScale/100.0;
 	CAcUiDialog::OnCancel();
 }

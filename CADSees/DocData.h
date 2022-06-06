@@ -28,7 +28,8 @@
 
 //-----------------------------------------------------------------------------
 //----- Here you can store the document / database related data.
-#define WEBADDRESS _T("www.CivilSoftScience.com")
+#define WEBADDRESS _T("www.OpenSeesHouse.com")
+enum LengthUnit {m = 1, cm = 2, mm = 3, in = 4, ft = 5};
 struct DispOptions
 {
 	bool dispNodeTags;
@@ -37,6 +38,8 @@ struct DispOptions
 	bool dispUndeformedWire;
 	double nodeSize;
 	double tagSize;
+	double defNodeSize;
+	double defTagSize;
 };
 class CDocData {
 
@@ -46,7 +49,9 @@ public:
 	CDocData () ;
 	CDocData (const CDocData &data) ;
 	~CDocData () ;
-
+	LengthUnit lengthUnit;
+	double lengthFac;
 	std::string inputFile;
 	DispOptions dispOptions;
+	AcDbObjectId btrId;
 } ;

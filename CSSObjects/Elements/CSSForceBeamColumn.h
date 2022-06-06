@@ -60,7 +60,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSForceBeamColumn () ;
-	CSSForceBeamColumn (int tag, int inode, int jnode, int nIntegPnts) ;
+	CSSForceBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
 	virtual ~CSSForceBeamColumn () ;
 
 	//----- AcDbObject protocols

@@ -60,7 +60,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSModElasticBeamColumn () ;
-	CSSModElasticBeamColumn (int tag, int inode, int jnode, int nIntegPnts) ;
+	CSSModElasticBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
 	virtual ~CSSModElasticBeamColumn () ;
 
 	//----- AcDbObject protocols

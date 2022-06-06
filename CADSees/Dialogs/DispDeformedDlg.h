@@ -33,9 +33,11 @@ public:
 	BOOL m_dispDeformed;
 	BOOL m_dispWire;
 	int m_respStep;
+	double m_scaleFac;
 	CSpinButtonCtrl m_stepSpin;
 	CSliderCtrl m_stepSlider;
 	afx_msg void OnEnChangeRespStepEdit();
+	afx_msg void OnEnChangeScaleFacEdit();
 	afx_msg void OnTRBNThumbPosChangingRespStepSlider(NMHDR *pNMHDR, LRESULT *pResult);
 	CButton m_dispDeformedCheck;
 	CButton m_dispWireCheck;

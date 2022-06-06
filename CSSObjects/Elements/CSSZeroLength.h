@@ -58,7 +58,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSZeroLength () ;
-	CSSZeroLength (int tag, int inode, int jnode) ;
+	CSSZeroLength (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSZeroLength () ;
 
 	//----- AcDbObject protocols

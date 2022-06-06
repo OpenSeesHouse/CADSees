@@ -45,9 +45,9 @@ CSSZeroLength::CSSZeroLength () : CSSElement () {
 	pVertList = 0;
 }
 
-CSSZeroLength::CSSZeroLength(int tag, int inode, int jnode): CSSElement (tag, "zeroLength")
-	, m_iNod(inode)
-	, m_jNod(jnode)
+CSSZeroLength::CSSZeroLength(int tag, std::vector<int> nodeTags): CSSElement (tag, "zeroLength")
+	, m_iNod(nodeTags[0])
+	, m_jNod(nodeTags[1])
 {
 	pVertList = 0;
 	initiatePnts(false);
@@ -115,8 +115,8 @@ Adesk::Boolean CSSZeroLength::subWorldDraw (AcGiWorldDraw *mode) {
 void CSSZeroLength::subList() const
 {
 	CSSElement::subList();
-	acutPrintf(_T("\n   iNode:\t%d"), m_iNod);
-	acutPrintf(_T("\n   jNode:\t%d"), m_jNod);
+	acutPrintf(_T("\n   nodeTags[0]:\t%d"), m_iNod);
+	acutPrintf(_T("\n   nodeTags[1]:\t%d"), m_jNod);
 }
 
 void CSSZeroLength::updateDeformedGeometry()
@@ -132,7 +132,7 @@ bool CSSZeroLength::initiatePnts(bool useDeformedGeom)
 {
 	assertWriteEnabled(false, true);
 	AcDbObjectId id;
-	if (!ObjUtils::getNode(&id, m_iNod))
+	if (!ObjUtils::getNode(id, m_iNod))
 	{
 		acutPrintf(_T("CSSElement:ERROR finding node object"));
 		return false;
@@ -144,7 +144,7 @@ bool CSSZeroLength::initiatePnts(bool useDeformedGeom)
     piNode = CSSNode::cast(pObj);
     assert(piNode != NULL);
 
-	if (!ObjUtils::getNode(&id, m_jNod))
+	if (!ObjUtils::getNode(id, m_jNod))
 	{
 		acutPrintf(_T("CSSElement:ERROR finding node object"));
 		piNode->close();

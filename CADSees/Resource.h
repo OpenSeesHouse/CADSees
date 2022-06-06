@@ -19,6 +19,9 @@
 #define IDC_RESP_STEP_SLIDER            148
 #define IDC_LAST_STEP_TEXT              149
 #define IDC_DISP_DEFORMED_CHECK2        150
+#define IDC_SCALE_FAC_EDIT              151
+#define IDC_RESP_STEP_SPIN2             152
+#define IDC_SCALE_FAC_SPIN              152
 #define TBS_NOTIFYBEFOREMOVE            0x0800
 
 // Next default values for new objects

@@ -49,14 +49,14 @@ CSSJoint2dElement::CSSJoint2dElement () : CSSElement () {
 	m_type = AcString(_T("Joint2d"));
 }
 
-CSSJoint2dElement::CSSJoint2dElement(int tag, int inode, int jnode, int knode, int lnode) : CSSElement(tag, "Joint2d")
+CSSJoint2dElement::CSSJoint2dElement(int tag, std::vector<int> nodeTags) : CSSElement(tag, "Joint2d")
 {
 	m_length = 0;
 	m_isNull = true;
-	m_iNod = inode;
-	m_jNod = jnode;
-	m_kNod = knode;
-	m_lNod = lnode;
+	m_iNod = nodeTags[0];
+	m_jNod = nodeTags[1];
+	m_kNod = nodeTags[2];
+	m_lNod = nodeTags[3];
 	initiated = false;
 }
 
@@ -177,8 +177,8 @@ Adesk::Boolean CSSJoint2dElement::subWorldDraw (AcGiWorldDraw *mode) {
 void CSSJoint2dElement::subList() const
 {
 	CSSElement::subList();
-	acutPrintf(_T("\n   iNode:\t%d"), m_iNod);
-	acutPrintf(_T("\n   jNode:\t%d"), m_jNod);
+	acutPrintf(_T("\n   nodeTags[0]:\t%d"), m_iNod);
+	acutPrintf(_T("\n   nodeTags[1]:\t%d"), m_jNod);
 	acutPrintf(_T("\n   kNode:\t%d"), m_kNod);
 	acutPrintf(_T("\n   lNode:\t%d"), m_lNod);
 }
@@ -196,7 +196,7 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
 	if (!res)
 		return false;
 	AcDbObjectId id;
-	if (!ObjUtils::getNode(&id, m_iNod))
+	if (!ObjUtils::getNode(id, m_iNod))
 	{
 		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
 		return false;
@@ -207,7 +207,7 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
     piNode = CSSNode::cast(pObj);
     assert(piNode != NULL);
 
-	if (!ObjUtils::getNode(&id, m_jNod))
+	if (!ObjUtils::getNode(id, m_jNod))
 	{
 		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
 		piNode->close();
@@ -219,7 +219,7 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
     pjNode = CSSNode::cast(pObj);
     assert(pjNode != NULL);
 	
-	if (!ObjUtils::getNode(&id, m_kNod))
+	if (!ObjUtils::getNode(id, m_kNod))
 	{
 		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
 		piNode->close();
@@ -231,7 +231,7 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
     pkNode = CSSNode::cast(pObj);
     assert(pjNode != NULL);
 	
-	if (!ObjUtils::getNode(&id, m_lNod))
+	if (!ObjUtils::getNode(id, m_lNod))
 	{
 		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
 		piNode->close();

@@ -60,7 +60,7 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSCorotTruss () ;
-	CSSCorotTruss (int tag, int inode, int jnode) ;
+	CSSCorotTruss (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSCorotTruss () ;
 
 	//----- AcDbObject protocols

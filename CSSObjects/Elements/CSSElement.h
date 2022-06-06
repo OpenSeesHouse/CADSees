@@ -54,12 +54,13 @@ class DLLIMPEXP CSSElement : public AcDbEntity {
 
 public:
 	ACRX_DECLARE_MEMBERS(CSSElement);
-	static std::vector<std::string> getSupportedEleList()
+	static std::vector<std::string> getSupportedEleList(std::vector<int>& eleNumNodes)
 	{
 		std::vector<std::string> res;
 		res.push_back("truss");
 		res.push_back("corotTruss");
 		res.push_back("elasticBeamColumn");
+		res.push_back("twoNodeLink");
 		res.push_back("dispBeamColumn");
 		res.push_back("forceBeamColumn");
 		res.push_back("nonlinearBeamColumn");
@@ -67,6 +68,30 @@ public:
 		res.push_back("ModElasticBeam2d");
 		res.push_back("ModElasticBeam3d");
 		res.push_back("Joint2D");
+		res.push_back("20_8_BrickUP");
+		res.push_back("SSPbrickUP");
+		res.push_back("SSPbrick");
+		res.push_back("stdBrick");
+		res.push_back("bbarBrick");
+		res.push_back("bbarBrickUP");
+
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(2);
+		eleNumNodes.push_back(4);
+		eleNumNodes.push_back(20);
+		eleNumNodes.push_back(8);
+		eleNumNodes.push_back(8);
+		eleNumNodes.push_back(8);
+		eleNumNodes.push_back(8);
+		eleNumNodes.push_back(8);
 		return res;
 	}
 protected:
@@ -86,6 +111,7 @@ public:
 
 	//- Grip points protocol
 	virtual void subList() const override;
+	virtual Acad::ErrorStatus subErase(Adesk::Boolean pErasing);
 
 protected:
 	AcDbEntity* pDeformedEntity;

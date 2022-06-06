@@ -49,10 +49,8 @@
 #include "Matrix/Vector.h"
 //-----------------------------------------------------------------------------
 #include "dbmain.h"
-#define VECTYPE Vector
 #define NODENTRYKEY _T("CSSRecorders")
-#define fileDataType Matrix
-#define fileMapType std::map<AcString, fileDataType>
+
 //-----------------------------------------------------------------------------
 class DLLIMPEXP CSSRecorder : public AcDbObject {
 
@@ -77,12 +75,12 @@ protected:
 	Adesk::UInt32 m_dof;
 	AcString m_relFilePath;
 	Adesk::UInt32 m_dataColId;			//zero-based number of data column
-	VECTYPE m_respVec;
+	Vector m_respVec;
 	bool m_hasTime;
 	static bool readFileData(AcString file, std::string folder, bool hasTime);
 public:
-	static fileMapType m_fileMap;	//maps file names to collections of data columns (not data rows)
-	static VECTYPE timeVec;
+	static std::map<AcString, Matrix*> m_fileMap;	//maps file names to collections of data columns (not data rows)
+	static Vector timeVec;
 	static int lastTag;
 	//get functions
 	AcString getRelFilePath() const;
@@ -91,7 +89,7 @@ public:
 	int getDof() const;
 	int getObjTag() const;
 	bool getHasTime() const;			//used only to know if time data are provided in this recorder's file
-	static VECTYPE& getTimeVec();
+	static Vector& getTimeVec();
 	static int getLastTag();
 
 	void setDof(int val);
@@ -99,8 +97,8 @@ public:
 	void setPath(std::string path);
 	void setDataCol(int dataCol);
 	//response
-	virtual bool applySelf(double t);
-	virtual bool applySelf(int nStep);
+	virtual bool applySelf(double t, double fac);
+	virtual bool applySelf(int nStep, double fac);
 	//to be implemented by derived classes
 	bool recordResponse(std::string folder);
 	//set functions

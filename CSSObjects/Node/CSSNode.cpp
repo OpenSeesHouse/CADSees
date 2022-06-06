@@ -140,6 +140,11 @@ Acad::ErrorStatus CSSNode::dwgInFields (AcDbDwgFiler *pFiler) {
 			ObjUtils::setNdm(3);
 		}
 	}
+	std::map<int, AcDbObjectId>::iterator it = NODEATTAGMAP.find(m_tag);
+	if (it == NODEATTAGMAP.end())
+	{
+		 NODEATTAGMAP.insert(std::pair<int, AcDbObjectId>(m_tag, this->objectId()));
+	}
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -271,6 +276,17 @@ void CSSNode::subList() const
 	acutPrintf(_T("\n   rotational deformations(x,y,z):\t%.2f, %.2f, %.2f"), m_rotation.x, m_rotation.y, m_rotation.z);
 }
 
+Acad::ErrorStatus CSSNode::subErase(Adesk::Boolean pErasing)
+{
+	 std::map<int, AcDbObjectId>::iterator it = NODEATTAGMAP.find(m_tag);
+	 if (it != NODEATTAGMAP.end())
+	 {
+		  NODEATTAGMAP.erase(it);
+	 }
+
+	 return AcDbEntity::subErase(pErasing);
+}
+
 void CSSNode::setDeformationAt(int dof, double value)
 {
 	assertWriteEnabled(false, true);
@@ -306,7 +322,8 @@ void CSSNode::initialize()
 {
 	if (pUndeformedCube == NULL)
 	{
-		pUndeformedCube = new CSSCube(m_crds, DISPOPTIONS.nodeSize);
+		double& ndSz = DISPOPTIONS.nodeSize;
+		pUndeformedCube = new CSSCube(m_crds, ndSz);
 		pDeformedCube = new CSSCube(pUndeformedCube);
 		pDeformedCube->setColorIndex(DOCDATA.nodeDfrmdColor);
 	} else

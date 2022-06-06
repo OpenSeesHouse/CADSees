@@ -20,19 +20,20 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- CSSTruss.cpp : Implementation of CSSTruss
+//----- CSSPile.cpp : Implementation of CSSPile
 //-----------------------------------------------------------------------------
 #include "stdafx.h"
-#include "CSSTruss.h"
+#include "CSSPile.h"
 
 //-----------------------------------------------------------------------------
-Adesk::UInt32 CSSTruss::kCurrentVersionNumber =1 ;
+Adesk::UInt32 CSSPile::kCurrentVersionNumber =1 ;
 
+//double CSSPile::douplShift = 0;
 //-----------------------------------------------------------------------------
 ACRX_DXF_DEFINE_MEMBERS (
-	CSSTruss, CSSLineElement,
+	CSSPile, AcDbEntity,
 	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
-	AcDbProxyEntity::kNoOperation, CSS_truss,
+	AcDbProxyEntity::kNoOperation, CSSPILE,
 CADSees
 |Product Desc:     An OpenSees pre/post-processor
 |Company:          Civil Soft Science
@@ -40,76 +41,106 @@ CADSees
 )
 
 //-----------------------------------------------------------------------------
-CSSTruss::CSSTruss () : CSSLineElement () {
-	m_type = AcString(_T("truss"));
+CSSPile::CSSPile () : AcDbEntity () {
+	m_crds1 = AcGePoint3d(0,0,0);
+	m_crds2 = AcGePoint3d(0,0,0);
+	pFaceList = 0;
+	pVertexList = 0;
 }
 
-CSSTruss::CSSTruss(int tag, std::vector<int> nodeTags): CSSLineElement (tag, nodeTags[0], nodeTags[1], "truss")
+CSSPile::CSSPile(CSSPile*& pCube)
 {
+	m_crds1 = pCube->getCrds1();
+	m_crds2 = pCube->getCrds2();
 }
 
-CSSTruss::~CSSTruss () {
-	if (pDeformedEntity != 0)
-		delete pDeformedEntity;
-	if (pUndeformedEntity != 0)
-		delete pUndeformedEntity;
+CSSPile::CSSPile(AcGePoint3d crds1, AcGePoint3d crds2) : AcDbEntity()
+{
+	m_crds1 = crds1;
+	m_crds2 = crds2;
+	pFaceList = 0;
+	pVertexList = 0;
+	initialize();
+}
+
+CSSPile::~CSSPile () {
+	if (pVertexList != 0)
+		delete[] pVertexList;
+	if (pFaceList != 0)
+		delete[] pFaceList;
 }
 
 //-----------------------------------------------------------------------------
 //----- AcDbObject protocols
 //- Dwg Filing protocol
-Acad::ErrorStatus CSSTruss::dwgOutFields (AcDbDwgFiler *pFiler) const {
+Acad::ErrorStatus CSSPile::dwgOutFields (AcDbDwgFiler *pFiler) const {
 	assertReadEnabled () ;
 	//----- Save parent class information first.
-	Acad::ErrorStatus es = CSSLineElement::dwgOutFields (pFiler) ;
+	Acad::ErrorStatus es =AcDbEntity::dwgOutFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSTruss::kCurrentVersionNumber)) != Acad::eOk )
+	if ( (es =pFiler->writeUInt32 (CSSPile::kCurrentVersionNumber)) != Acad::eOk )
 		return (es) ;
 	//----- Output params
-
 	return (pFiler->filerStatus ()) ;
 }
 
-Acad::ErrorStatus CSSTruss::dwgInFields (AcDbDwgFiler *pFiler) {
+Acad::ErrorStatus CSSPile::dwgInFields (AcDbDwgFiler *pFiler) {
 	assertWriteEnabled () ;
 	//----- Read parent class information first.
-	Acad::ErrorStatus es = CSSLineElement::dwgInFields (pFiler) ;
+	Acad::ErrorStatus es =AcDbEntity::dwgInFields (pFiler) ;
 	if ( es != Acad::eOk )
 		return (es) ;
 	//----- Object version number needs to be read first
 	Adesk::UInt32 version =0 ;
 	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
 		return (es) ;
-	if ( version > CSSTruss::kCurrentVersionNumber )
+	if ( version > CSSPile::kCurrentVersionNumber )
 		return (Acad::eMakeMeProxy) ;
 	//- Uncomment the 2 following lines if your current object implementation cannot
 	//- support previous version of that object.
-	//if ( version < CSSTruss::kCurrentVersionNumber )
+	//if ( version < CSSPile::kCurrentVersionNumber )
 	//	return (Acad::eMakeMeProxy) ;
 	//----- Read params
+	initialize();
 	return (pFiler->filerStatus ()) ;
 }
 
-bool CSSTruss::updateGeometry(bool useDeformedGeom)
-{
-	assertWriteEnabled(false, true);
-	bool res = CSSLineElement::updateGeometry(useDeformedGeom);
-	if (!res)
-		return false;
+//-----------------------------------------------------------------------------
+//----- AcDbEntity protocols
 
-	if (pDeformedEntity == nullptr)
-	{
-		pDeformedEntity = new AcDbLine(crds1, crds2);
-		pUndeformedEntity = new AcDbLine(crds1, crds2);
-	}
-	else if (useDeformedGeom)
-	{
-		AcDbLine* pLine = (AcDbLine*)pDeformedEntity;
-		pLine->setStartPoint(crds1);
-		pLine->setEndPoint(crds2);
-	}
-	m_isNull = false;
-	return true;
+Adesk::Boolean CSSPile::subWorldDraw (AcGiWorldDraw *mode) {
+	assertReadEnabled () ;
+	AcGePoint3d pnts[2];
+	pnts[0] = m_crds1;
+	pnts[1] = m_crds2;
+	mode->geometry().worldLine(pnts);
+	return (AcDbEntity::subWorldDraw(mode)) ;
 }
+
+Acad::ErrorStatus CSSPile::subTransformBy(const AcGeMatrix3d& xform)
+{
+	assertWriteEnabled (false, false) ;
+	m_crds1.transformBy(xform);
+	m_crds2.transformBy(xform);
+	return ErrorStatus::eOk;
+}
+
+void CSSPile::initialize()
+{
+}
+
+
+AcGePoint3d CSSPile::getCrds1() const
+{
+	assertReadEnabled();
+	return m_crds1/*+m_shiftVec*/;
+}
+
+AcGePoint3d CSSPile::getCrds2() const
+{
+	assertReadEnabled();
+	return m_crds2/*+m_shiftVec*/;
+}
+

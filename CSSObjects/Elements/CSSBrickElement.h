@@ -20,7 +20,7 @@
 //
 
 //-----------------------------------------------------------------------------
-//----- CSSNode.h : Declaration of the CSSNode
+//----- CSSBrickElement.h : Declaration of the CSSBrickElement
 //-----------------------------------------------------------------------------
 #pragma once
 
@@ -43,49 +43,51 @@
 //----- going away.
 #define DLLIMPEXP
 #endif
-#include <vector>
 
 //-----------------------------------------------------------------------------
-class CSSNode;
-class CSSLineElement;
-class AcDbBlockTableRecord;
+#include "dbmain.h"
+#include "CSSElement.h"
+
 //-----------------------------------------------------------------------------
-class DLLIMPEXP ObjUtils {
+class DLLIMPEXP CSSBrickElement : public CSSElement {
+
 public:
-	static std::vector<std::string> pars(std::string str, const char* delimiter);
-	static AcDbObjectId getModelSpaceId();
-	static AcDbBlockTableRecord* getModelSpace(OpenMode mode);
+	ACRX_DECLARE_MEMBERS(CSSBrickElement) ;
+protected:
+	static Adesk::UInt32 kCurrentVersionNumber ;
 
-	static bool getNode(AcDbObjectId& resId, int tag);
-	static AcGePoint3d* getNodeCrds(int tag);
-	static bool getElement(AcDbObjectId* pResId, int tag);
-	static bool getRecorder(AcDbObjectId* pId, int obj_tag, int dof, const char* respType);
-	static void GetAllRecorders(std::vector<AcDbObjectId> &resIds);
-	static int getNdm();
-	static int getNdof();
-	static int getNumNodesAtCrd(AcGePoint3d pnt);
-	static void GetAllNodes(std::vector<AcDbObjectId>& resIds);
-	static void GetAllElements(std::vector<AcDbObjectId>& resids);
-	//static AcDbObjectId GetAnyNode();
+public:
+	CSSBrickElement () ;
+	CSSBrickElement (int tag, std::vector<int> nodeTags, std::string type) ;
+	virtual ~CSSBrickElement () ;
 
-	static void setNdm(int val);
-	static void setNdof(int val);
-	static void setShowDeformed(bool deformed);
-	static void setShowUndeformedWire(bool val);
-	static void setShowNodeTags(bool val);
-	static void setShowEleTags(bool val);
-	static void setTagsSize(double val);
-	static void setNodesSize(double val);
+	//----- AcDbObject protocols
+	//- Dwg Filing protocol
+	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
+	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
-	static void addPile(AcGePoint3d vertex, AcGePoint3d vertex2);
-	static void addCube(AcGePoint3d vertex, double sizeX, double sizeY, double sizeZ);
-	static void addNode(int tag, AcGePoint3d pnt);
-	static void addElement(std::string type, int tag, std::vector<int> nodeTags, std::vector<std::string> line);
-	static void addNodeRecorder(int* objTags, int* dofs, int num, std::string path, int* dataCols, bool hasTime);
-	static void RedrawGraphics(bool redrawBody = false);
-	static void RedrawNodeGraphics(bool redrawBody = false);
-	static void RedrawElementsGraphics(bool redrawBody = false);
-	static bool getShowDeformed();
-	static double getNodeSize();
+	//----- AcDbEntity protocols
+	//- Graphics protocol
+protected:
+	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
+	virtual void subList() const override;
+	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
+
+	//- Osnap points protocol
+public:
+	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
+	virtual bool updateGeometry(bool useDeformedGeom);
+	virtual double getLength() const override;
+protected:
+	 std::vector<int> m_nodeTags;
+	 std::vector<int> m_cornerNodes;
+	 std::string m_type;
+	 AcGePoint3d *pVertexList;
+	Adesk::Int32* pFaceList;
+	double m_size[3];
+	std::vector<CSSNode*> m_nodes;
 } ;
 
+#ifdef CADSEESOBJECTS_MODULE
+ACDB_REGISTER_OBJECT_ENTRY_AUTO(CSSBrickElement)
+#endif
