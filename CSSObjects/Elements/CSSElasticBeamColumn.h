@@ -60,13 +60,8 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSElasticBeamColumn () ;
-	CSSElasticBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
+	CSSElasticBeamColumn (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSElasticBeamColumn () ;
-
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
 } ;
 

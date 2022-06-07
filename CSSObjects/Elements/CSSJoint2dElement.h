@@ -62,10 +62,6 @@ public:
 	CSSJoint2dElement (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSJoint2dElement () ;
 
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
@@ -77,15 +73,9 @@ protected:
 protected:
 	//AcDbCurve* pDeformedCurve;
 	//AcDbCurve* pUndeformedCurve;
-	Adesk::UInt32 m_iNod, m_jNod, m_kNod, m_lNod;
-	AcGePoint3d crds1, crds2, crds3, crds4;
 	AcGePoint3d vrtxList[4], dfrmdVrtxList[4];
-	AcGeVector3d vec1, vec2;
-	double m_length;
-	CSSNode *piNode, *pjNode, *pkNode, *plNode;
 public:
 	virtual bool updateGeometry(bool useDeformedGeom) override;
-	virtual double getLength() const override;
 private:
 	bool initiated;
 } ;

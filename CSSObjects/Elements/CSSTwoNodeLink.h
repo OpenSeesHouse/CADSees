@@ -48,10 +48,10 @@
 #include "dbspline.h"
 
 class CSSNode;
-#include "CSSLineElement.h"
+#include "CSSBeamElement.h"
 
 //-----------------------------------------------------------------------------
-class DLLIMPEXP CSSTwoNodeLink : public CSSLineElement {
+class DLLIMPEXP CSSTwoNodeLink : public CSSBeamElement {
 
 public:
 	ACRX_DECLARE_MEMBERS(CSSTwoNodeLink) ;
@@ -64,9 +64,6 @@ public:
 	virtual ~CSSTwoNodeLink () ;
 
 	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
 } ;
 

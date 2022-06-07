@@ -48,11 +48,23 @@ CSSElement::CSSElement () : AcDbEntity () {
 	pUndeformedEntity = 0;
 }
 
-CSSElement::CSSElement(int tag, std::string type): AcDbEntity ()
+CSSElement::CSSElement(int tag, std::vector<int> nodeTags, std::string type): AcDbEntity ()
 {
 	m_tag = tag;
 	m_type = AcString(type.c_str(), AcString::Encoding::Utf8);
 	m_isNull = false;
+	m_nodes = nodeTags;
+	m_crds.reserve(m_nodes.size());
+	m_nodePtrs.reserve(m_nodes.size());
+	for (int nd : m_nodes)
+	{
+		AcGePoint3d pCrd;
+		if(ObjUtils::getNodeCrds(nd, &pCrd))
+			m_crds.push_back(pCrd);
+		else
+			m_crds.push_back(AcGePoint3d(0, 0, 0));
+		m_nodePtrs.push_back(0);
+	}
 	pDeformedEntity = 0;
 	pUndeformedEntity = 0;
 }
@@ -77,7 +89,18 @@ Acad::ErrorStatus CSSElement::dwgOutFields (AcDbDwgFiler *pFiler) const {
 		return (es) ;
 	if ( (es =pFiler->writeItem (m_type)) != Acad::eOk )
 		return (es) ;
-
+	if ( (es =pFiler->writeItem ((int)m_nodes.size())) != Acad::eOk )
+		return (es) ;
+	for (const int& nd : m_nodes)
+	{
+		if ((es = pFiler->writeItem(nd)) != Acad::eOk)
+			return (es);
+	}
+	for (const AcGePoint3d& pnt : m_crds)
+	{
+		if ((es = pFiler->writeItem(pnt)) != Acad::eOk)
+			return (es);
+	}
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -93,22 +116,36 @@ Acad::ErrorStatus CSSElement::dwgInFields (AcDbDwgFiler *pFiler) {
 		return (es) ;
 	if ( version > CSSElement::kCurrentVersionNumber )
 		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSElement::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
 	if ( (es =pFiler->readItem (&m_tag)) != Acad::eOk )
 		return (es) ;
 	if ( (es =pFiler->readString (m_type)) != Acad::eOk )
 		return (es) ;
-	m_isNull = false;
+	int numNodes = 0;
+	if ((es = pFiler->readItem(&numNodes)) != Acad::eOk)
+		return (es);
+	m_nodes.reserve(numNodes);
+	m_crds.reserve(numNodes);
+	m_nodePtrs.reserve(numNodes);
+	for (int i = 0; i < numNodes; i++)
+	{
+		m_nodes.push_back(0);
+		if ((es = pFiler->readItem(&m_nodes[i])) != Acad::eOk)
+			return (es);
+	}
+	for (int i = 0; i < numNodes; i++)
+	{
+		m_crds.push_back(AcGePoint3d());
+		if ((es = pFiler->readItem(&m_crds[i])) != Acad::eOk)
+			return (es);
+		m_nodePtrs.push_back(0);
+	}
 	std::map<int, AcDbObjectId>::iterator it = ELEMATTAGMAP.find(m_tag);
 	if (it == ELEMATTAGMAP.end())
 	{
 		 ELEMATTAGMAP.insert(std::pair<int, AcDbObjectId>(m_tag, this->objectId()));
 	}
-
+	m_isNull = true;
+	updateGeometry(false);
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -117,9 +154,10 @@ Acad::ErrorStatus CSSElement::dwgInFields (AcDbDwgFiler *pFiler) {
 
 void CSSElement::subList() const
 {
-	acutPrintf(_T("\n***CADSees***"));
-	acutPrintf(_T("\n	Element type: %s"), m_type.kACharPtr());
+	acutPrintf(_T("\n	CADSees Element (%s):"), m_type.kACharPtr());
 	acutPrintf(_T("\n   tag:\t\t%d"), m_tag);
+	for (int i = 0; i < m_nodes.size(); i++)
+		acutPrintf(_T("\n   Node[%d]:\t\t%d"), i+1, m_nodes[i]);
 }
 
 Acad::ErrorStatus CSSElement::subErase(Adesk::Boolean pErasing)
@@ -148,6 +186,24 @@ int CSSElement::getIsNull() const
 
 bool CSSElement::updateGeometry(bool useDeformedGeom)
 {
+	AcDbObjectId id;
+	int i = 0;
+	ErrorStatus es;
+	AcDbObject* pObj;
+	for (int nd : m_nodes)
+	{
+		if (!ObjUtils::getNode(id, nd))
+		{
+			acutPrintf(_T("CSSElement:ERROR finding node object"));
+			return false;
+		}
+		pObj = NULL;
+		es = acdbOpenObject(pObj, id, AcDb::kForRead);
+		assert(pObj != NULL);
+		m_nodePtrs[i] = CSSNode::cast(pObj);
+		assert(m_nodePtrs[i] != NULL);
+		i++;
+	}
 	return true;
 }
 

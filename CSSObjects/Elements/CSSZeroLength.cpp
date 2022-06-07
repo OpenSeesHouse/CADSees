@@ -45,62 +45,17 @@ CSSZeroLength::CSSZeroLength () : CSSElement () {
 	pVertList = 0;
 }
 
-CSSZeroLength::CSSZeroLength(int tag, std::vector<int> nodeTags): CSSElement (tag, "zeroLength")
-	, m_iNod(nodeTags[0])
-	, m_jNod(nodeTags[1])
+CSSZeroLength::CSSZeroLength(int tag, std::vector<int> nodeTags): CSSElement (tag, nodeTags, "zeroLength")
 {
 	pVertList = 0;
 	initiatePnts(false);
 }
 
 CSSZeroLength::~CSSZeroLength () {
+	if (pVertList != 0)
+		delete[] pVertList;
 }
 
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSZeroLength::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSZeroLength::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-	if ( (es =pFiler->writeItem (m_iNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->writeItem (m_jNod)) != Acad::eOk )
-		return (es) ;
-
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSZeroLength::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSZeroLength::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSZeroLength::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	if ( (es =pFiler->readItem (&m_iNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->readItem (&m_jNod)) != Acad::eOk )
-		return (es) ;
-	initiatePnts(false);
-	return (pFiler->filerStatus ()) ;
-}
 
 //-----------------------------------------------------------------------------
 //----- CSSElement protocols
@@ -111,13 +66,6 @@ Adesk::Boolean CSSZeroLength::subWorldDraw (AcGiWorldDraw *mode) {
 }
 
 
-
-void CSSZeroLength::subList() const
-{
-	CSSElement::subList();
-	acutPrintf(_T("\n   nodeTags[0]:\t%d"), m_iNod);
-	acutPrintf(_T("\n   nodeTags[1]:\t%d"), m_jNod);
-}
 
 void CSSZeroLength::updateDeformedGeometry()
 {
@@ -132,44 +80,19 @@ bool CSSZeroLength::initiatePnts(bool useDeformedGeom)
 {
 	assertWriteEnabled(false, true);
 	AcDbObjectId id;
-	if (!ObjUtils::getNode(id, m_iNod))
-	{
-		acutPrintf(_T("CSSElement:ERROR finding node object"));
-		return false;
-	}
-	AcDbObject   *pObj = NULL;
-	CSSNode *piNode;
-	ErrorStatus es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    piNode = CSSNode::cast(pObj);
-    assert(piNode != NULL);
-
-	if (!ObjUtils::getNode(id, m_jNod))
-	{
-		acutPrintf(_T("CSSElement:ERROR finding node object"));
-		piNode->close();
-		return false;
-	}
-	pObj = NULL;
-	CSSNode *pjNode;
-	es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    pjNode = CSSNode::cast(pObj);
-    assert(pjNode != NULL);
 	AcGePoint3d crds1, crds2;
 	if (useDeformedGeom)
 	{
-		crds1 = piNode->getDeformedCrds();
-		crds2 = pjNode->getDeformedCrds();
+		m_crds[0] = m_nodePtrs[0]->getDeformedCrds();
+		m_crds[1] = m_nodePtrs[1]->getDeformedCrds();
 	} else
 	{
-		crds1 = piNode->getCrds();
-		crds2 = pjNode->getCrds();
-		
+		m_crds[0] = m_nodePtrs[0]->getCrds();
+		m_crds[1] = m_nodePtrs[1]->getCrds();
 	}
-	piNode->close();
-	pjNode->close();
-	AcGeVector3d vec(crds2-crds1);
+	m_nodePtrs[0]->close();
+	m_nodePtrs[1]->close();
+	AcGeVector3d vec(m_crds[1] - m_crds[0]);
 	if (vec.length() < 1.e-5)
 		vec.set(1,0,0);
 	double Ln = vec.length()*ZLHTOLRAT;

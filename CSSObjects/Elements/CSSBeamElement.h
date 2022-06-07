@@ -47,7 +47,7 @@
 //-----------------------------------------------------------------------------
 #include "dbspline.h"
 
-#include "CSSBeamElement.h"
+#include "CSSLineElement.h"
 class CSSNode;
 
 //-----------------------------------------------------------------------------
@@ -59,29 +59,11 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSBeamElement () ;
-	CSSBeamElement (int tag, int inode, int jnode, int nIntegPnts, std::string type) ;
+	CSSBeamElement (int tag, std::vector<int> nodeTags, std::string type) ;
 	virtual ~CSSBeamElement () ;
 
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
-	//----- AcDbEntity protocols
-	//- Graphics protocol
 protected:
-
-	//- Osnap points protocol
-public:
-	//- Grip points protocol
-	virtual void subList() const override;
-
-protected:
-	Adesk::UInt32 m_numIntegPnts;
-	AcGePoint3dArray pntArr;
-	AcGeVector3d vec2;
-	//CSSNode** m_pIntegPoints;
-	static double* getSectionLocations(int numSections);
+	//static double* getSectionLocations(int numSections);
 public:
 	virtual bool updateGeometry(bool useDeformedGeom) override;
 } ;

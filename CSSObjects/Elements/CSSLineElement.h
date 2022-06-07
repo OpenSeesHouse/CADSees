@@ -59,32 +59,18 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSLineElement () ;
-	CSSLineElement (int tag, int inode, int jnode, std::string type) ;
+	CSSLineElement (int tag, std::vector<int> nodeTags, std::string type) ;
 	virtual ~CSSLineElement () ;
 
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
-	//----- AcDbEntity protocols
-	//- Graphics protocol
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 
 	//- Osnap points protocol
-	virtual void subList() const override;
 
 protected:
-	//AcDbCurve* pDeformedCurve;
-	//AcDbCurve* pUndeformedCurve;
-	Adesk::UInt32 m_iNod, m_jNod;
-	AcGePoint3d crds1, crds2;
 	AcGeVector3d vec;
-	double m_length;
-	CSSNode *piNode, *pjNode;
 public:
 	virtual bool updateGeometry(bool useDeformedGeom);
-	virtual double getLength() const override;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE

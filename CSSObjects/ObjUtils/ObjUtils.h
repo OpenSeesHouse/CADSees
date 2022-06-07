@@ -55,9 +55,8 @@ public:
 	static std::vector<std::string> pars(std::string str, const char* delimiter);
 	static AcDbObjectId getModelSpaceId();
 	static AcDbBlockTableRecord* getModelSpace(OpenMode mode);
-
 	static bool getNode(AcDbObjectId& resId, int tag);
-	static AcGePoint3d* getNodeCrds(int tag);
+	static bool getNodeCrds(int tag, AcGePoint3d*);
 	static bool getElement(AcDbObjectId* pResId, int tag);
 	static bool getRecorder(AcDbObjectId* pId, int obj_tag, int dof, const char* respType);
 	static void GetAllRecorders(std::vector<AcDbObjectId> &resIds);

@@ -44,7 +44,7 @@ CSSTruss::CSSTruss () : CSSLineElement () {
 	m_type = AcString(_T("truss"));
 }
 
-CSSTruss::CSSTruss(int tag, std::vector<int> nodeTags): CSSLineElement (tag, nodeTags[0], nodeTags[1], "truss")
+CSSTruss::CSSTruss(int tag, std::vector<int> nodeTags): CSSLineElement (tag, nodeTags, "truss")
 {
 }
 
@@ -55,42 +55,6 @@ CSSTruss::~CSSTruss () {
 		delete pUndeformedEntity;
 }
 
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSTruss::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es = CSSLineElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSTruss::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSTruss::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es = CSSLineElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSTruss::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSTruss::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	return (pFiler->filerStatus ()) ;
-}
 
 bool CSSTruss::updateGeometry(bool useDeformedGeom)
 {
@@ -101,15 +65,17 @@ bool CSSTruss::updateGeometry(bool useDeformedGeom)
 
 	if (pDeformedEntity == nullptr)
 	{
-		pDeformedEntity = new AcDbLine(crds1, crds2);
-		pUndeformedEntity = new AcDbLine(crds1, crds2);
+		pDeformedEntity = new AcDbLine(m_crds[0], m_crds[1]);
+		pUndeformedEntity = new AcDbLine(m_crds[0], m_crds[1]);
 	}
 	else if (useDeformedGeom)
 	{
 		AcDbLine* pLine = (AcDbLine*)pDeformedEntity;
-		pLine->setStartPoint(crds1);
-		pLine->setEndPoint(crds2);
+		pLine->setStartPoint(m_crds[0]);
+		pLine->setEndPoint(m_crds[1]);
 	}
 	m_isNull = false;
+	m_nodePtrs[0]->close();
+	m_nodePtrs[1]->close();
 	return true;
 }

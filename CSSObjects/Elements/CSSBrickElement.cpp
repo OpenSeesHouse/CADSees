@@ -42,19 +42,14 @@ CADSees
 
 //-----------------------------------------------------------------------------
 CSSBrickElement::CSSBrickElement() : CSSElement() {
-	 m_type = "NotInitiated";
+	 m_type = AcString(_T("NotInitiated"));
 	 pFaceList = 0;
 	 pVertexList = 0;
 }
 
 
-CSSBrickElement::CSSBrickElement(int tag, std::vector<int> nodeTags, std::string type) : CSSElement(tag, type)
+CSSBrickElement::CSSBrickElement(int tag, std::vector<int> nodeTags, std::string type) : CSSElement(tag, nodeTags, type)
 {
-	 m_type = type;
-	 m_nodeTags = nodeTags;
-	 for (int i = 1; i <= nodeTags.size(); i++)
-		  m_nodes.push_back(NULL);
-	 m_cornerNodes = { 1, 2, 3, 4, 5, 6, 7, 8 };
 	 pFaceList = NULL;
 	 pVertexList = NULL;
 }
@@ -66,42 +61,6 @@ CSSBrickElement::~CSSBrickElement () {
 		delete[] pFaceList;
 }
 
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSBrickElement::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es =AcDbEntity::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSBrickElement::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSBrickElement::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =AcDbEntity::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSBrickElement::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSBrickElement::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-
-	return (pFiler->filerStatus ()) ;
-}
 
 //-----------------------------------------------------------------------------
 //----- AcDbEntity protocols
@@ -118,7 +77,7 @@ Adesk::Boolean CSSBrickElement::subWorldDraw (AcGiWorldDraw *mode) {
 		 AcGeVector3d vec(pVertexList[1] - pVertexList[0]);
 		 AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 		 AcGeVector3d up = vec.perpVector();
-		 AcGePoint3d crds = pVertexList[0] + 0.5 * vec + 0.03 * getLength() * up;
+		 AcGePoint3d crds = pVertexList[0] + 0.5 * vec + 0.03 * vec.length() * up;
 		 AcString tagStr;
 		 tagStr.format(_T("%d"), m_tag);
 		 mode->geometry().text(crds, normal, AcGeVector3d(1, 0, 0), DISPOPTIONS.tagSize, 1., 0, tagStr.kACharPtr());
@@ -137,20 +96,6 @@ Acad::ErrorStatus CSSBrickElement::subTransformBy(const AcGeMatrix3d& xform)
 	return ErrorStatus::eOk;
 }
 
-double CSSBrickElement::getLength() const
-{
-	 assertReadEnabled();
-	 double m_length = 0;
-	 for (int i = 0; i < 3; i++)
-		  m_length += pow(m_size[i],2);
-	 m_length = pow(m_length,0.5);
-	 return m_length;
-}
-void CSSBrickElement::subList() const
-{
-	 CSSElement::subList();
-}
-
 bool CSSBrickElement::updateGeometry(bool useDeformedGeom)
 {
 	 assertWriteEnabled(false, true);
@@ -161,23 +106,13 @@ bool CSSBrickElement::updateGeometry(bool useDeformedGeom)
 	 {
 		  pVertexList = new AcGePoint3d[8];
 		  AcDbObjectId id;
-		  for (int i : m_cornerNodes)
+		  for (int i : getCornerNodes())
 		  {
-				if (!ObjUtils::getNode(id, m_nodeTags[i - 1]))
-				{
-					 acutPrintf(_T("CSSBrickElement:Node with tag %d was not found in the dataBase"), m_nodeTags[i - 1]);
-					 return false;
-				}
-				AcDbObject* pObj = NULL;
-				ErrorStatus es = acdbOpenObject(pObj, id, AcDb::kForRead);
-				assert(pObj != NULL);
-				m_nodes[i - 1] = CSSNode::cast(pObj);
-				assert(m_nodes[i-1] != NULL);
 				if (useDeformedGeom)
-					 pVertexList[i-1] = m_nodes[i - 1]->getDeformedCrds();
+					 pVertexList[i-1] = m_nodePtrs[i - 1]->getDeformedCrds();
 				else
-					 pVertexList[i-1] = m_nodes[i - 1]->getCrds();
-				m_nodes[i - 1]->close();
+					 pVertexList[i-1] = m_nodePtrs[i - 1]->getCrds();
+				m_nodePtrs[i - 1]->close();
 		  }
 
 		  pFaceList = new Adesk::Int32[30];
@@ -213,4 +148,9 @@ bool CSSBrickElement::updateGeometry(bool useDeformedGeom)
 	 m_size[2] = (pVertexList[0] - pVertexList[3]).length();
 	 m_isNull = false;
 	 return true;
+}
+
+std::vector<int> CSSBrickElement::getCornerNodes()
+{
+	return { 1, 2, 3, 4, 5, 6, 7, 8 };
 }

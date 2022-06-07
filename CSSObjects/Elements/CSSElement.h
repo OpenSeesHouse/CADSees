@@ -100,7 +100,7 @@ protected:
 	virtual Adesk::Boolean subWorldDraw(AcGiWorldDraw* mode);
 public:
 	CSSElement();
-	CSSElement(int tag, std::string type);
+	CSSElement(int tag, std::vector<int> nodeTags, std::string type);
 	virtual ~CSSElement();
 
 	//----- AcDbObject protocols
@@ -120,11 +120,14 @@ protected:
 	Adesk::Boolean m_isNull;
 	Adesk::UInt32 m_tag;
 	AcString m_type;
+	std::vector<int> m_nodes;
+	std::vector <AcGePoint3d> m_crds;
+	std::vector<CSSNode*> m_nodePtrs;
+
 public:
 	int getTag() const;
 	int getIsNull() const;
 	virtual bool updateGeometry(bool useDeformedGeom);
-	virtual double getLength() const { return 0; }
 };
 
 #ifdef CADSEESOBJECTS_MODULE

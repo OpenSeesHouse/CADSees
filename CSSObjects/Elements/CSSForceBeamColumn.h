@@ -60,13 +60,8 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSForceBeamColumn () ;
-	CSSForceBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
+	CSSForceBeamColumn (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSForceBeamColumn () ;
-
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE

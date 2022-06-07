@@ -44,46 +44,9 @@ CSSModElasticBeamColumn::CSSModElasticBeamColumn () : CSSBeamElement () {
 	m_type = AcString(_T("modElasticBeamColumn"));
 }
 
-CSSModElasticBeamColumn::CSSModElasticBeamColumn(int tag, std::vector<int> nodeTags, int nIntegPnts): CSSBeamElement (tag, nodeTags[0], nodeTags[1], nIntegPnts, "modElasticBeamColumn")
+CSSModElasticBeamColumn::CSSModElasticBeamColumn(int tag, std::vector<int> nodeTags): CSSBeamElement (tag, nodeTags, "modElasticBeamColumn")
 {
 }
 
 CSSModElasticBeamColumn::~CSSModElasticBeamColumn () {
-}
-
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSModElasticBeamColumn::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSBeamElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSModElasticBeamColumn::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSModElasticBeamColumn::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSBeamElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSModElasticBeamColumn::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSModElasticBeamColumn::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	return (pFiler->filerStatus ()) ;
 }

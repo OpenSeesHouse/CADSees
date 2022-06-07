@@ -44,46 +44,9 @@ CSSForceBeamColumn::CSSForceBeamColumn () : CSSBeamElement () {
 	m_type = AcString(_T("forceBeamColumn"));
 }
 
-CSSForceBeamColumn::CSSForceBeamColumn(int tag, std::vector<int> nodeTags, int nIntegPnts): CSSBeamElement (tag, nodeTags[0], nodeTags[1], nIntegPnts, "forceBeamColumn")
+CSSForceBeamColumn::CSSForceBeamColumn(int tag, std::vector<int> nodeTags): CSSBeamElement (tag, nodeTags, "forceBeamColumn")
 {
 }
 
 CSSForceBeamColumn::~CSSForceBeamColumn () {
-}
-
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSForceBeamColumn::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSBeamElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSForceBeamColumn::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSForceBeamColumn::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSBeamElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSForceBeamColumn::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSForceBeamColumn::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	return (pFiler->filerStatus ()) ;
 }

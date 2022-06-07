@@ -29,6 +29,11 @@
 //-----------------------------------------------------------------------------
 //----- Here you can store the document / database related data.
 #define WEBADDRESS _T("www.OpenSeesHouse.com")
+struct  comp {
+	bool operator () (const AcGePoint3d& a, const AcGePoint3d& b) const {
+		return a.asVector().length() < b.asVector().length();
+	}
+};
 struct DispOptions
 {
 	bool dispNodeTags;
@@ -57,7 +62,7 @@ public:
 	Adesk::UInt32 eleDfrmdColor;
 	Adesk::UInt32 nodeDfrmdColor;
 	AcDbObjectId btrId;
-	std::multimap<AcString, int> nodeAtCrdsMap;
+	std::multimap<AcGePoint3d, int, comp> nodeAtCrdsMap;
 	std::map<int, AcDbObjectId> nodeAtTagMap;
 	std::map<int, AcDbObjectId> elemAtTagMap;
 

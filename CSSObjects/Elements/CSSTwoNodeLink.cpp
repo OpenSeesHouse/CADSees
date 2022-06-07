@@ -40,50 +40,13 @@ CADSees
 )
 
 //-----------------------------------------------------------------------------
-CSSTwoNodeLink::CSSTwoNodeLink () : CSSLineElement () {
+CSSTwoNodeLink::CSSTwoNodeLink () : CSSBeamElement () {
 	m_type = AcString(_T("twoNodeLink"));
 }
 
-CSSTwoNodeLink::CSSTwoNodeLink(int tag, std::vector<int> nodeTags): CSSLineElement (tag, nodeTags[0], nodeTags[1], "twoNodeLink")
+CSSTwoNodeLink::CSSTwoNodeLink(int tag, std::vector<int> nodeTags): CSSBeamElement (tag, nodeTags, "twoNodeLink")
 {
 }
 
 CSSTwoNodeLink::~CSSTwoNodeLink () {
-}
-
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSTwoNodeLink::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSTwoNodeLink::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSTwoNodeLink::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSTwoNodeLink::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSTwoNodeLink::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	return (pFiler->filerStatus ()) ;
 }

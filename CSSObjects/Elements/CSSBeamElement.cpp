@@ -41,14 +41,10 @@ CADSees
 
 //-----------------------------------------------------------------------------
 CSSBeamElement::CSSBeamElement () : CSSLineElement() {
-	m_numIntegPnts = 0;
-	// m_pIntegPoints = NULL;
 }
 
-CSSBeamElement::CSSBeamElement(int tag, int inode, int jnode, int nIntegPnts, std::string type): CSSLineElement (tag, inode, jnode, type)
+CSSBeamElement::CSSBeamElement(int tag, std::vector<int> nodeTags, std::string type): CSSLineElement (tag, nodeTags, type)
 {
-	// m_pIntegPoints = NULL;
-	m_numIntegPnts = nIntegPnts;
 }
 
 CSSBeamElement::~CSSBeamElement () {
@@ -60,73 +56,19 @@ CSSBeamElement::~CSSBeamElement () {
 		delete pUndeformedEntity;
 }
 
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSBeamElement::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es =pFiler->writeUInt32 (CSSBeamElement::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-	if ( (es =pFiler->writeItem (m_numIntegPnts)) != Acad::eOk )
-		return (es) ;
-
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSBeamElement::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSLineElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSBeamElement::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSBeamElement::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	if ( (es =pFiler->readItem (&m_numIntegPnts)) != Acad::eOk )
-		return (es) ;
-
-	// initShape() should be called in derived classes;
-	return (pFiler->filerStatus ()) ;
-}
-
-//-----------------------------------------------------------------------------
-//----- AcDbEntity protocols
-
-
-void CSSBeamElement::subList() const
-{
-	CSSLineElement::subList();
-	if (m_numIntegPnts != 0)
-	{
-		acutPrintf(_T("\n   numIntegPnts: %d"), m_numIntegPnts);		
-	}
-}
-
 bool CSSBeamElement::updateGeometry(bool useDeformedGeom)
 {
 	assertWriteEnabled(false, true);
 	bool res = CSSLineElement::updateGeometry(useDeformedGeom);
 	if (!res)
 		return false;
+	static AcGeVector3d vec2;
+	static AcGePoint3dArray pntArr;
 	pntArr.removeAll();
 	if (useDeformedGeom)
 	{
-		int ndof = piNode->getNDof();
-		AcGeVector3d rotation = piNode->getRotation();
+		int ndof = m_nodePtrs[0]->getNDof();
+		AcGeVector3d rotation = m_nodePtrs[0]->getRotation();
 		AcGeMatrix3d trans;
 		trans.setToIdentity();
 		if (ndof >= 3)
@@ -141,9 +83,10 @@ bool CSSBeamElement::updateGeometry(bool useDeformedGeom)
 				trans *= trans2;
 			}
 		}
+		vec2 = vec; //vec is set in CSSLineElement
 		vec.transformBy(trans);
 
-		rotation = pjNode->getRotation();
+		rotation = m_nodePtrs[1]->getRotation();
 		trans.setToIdentity();
 		if (ndof >= 3)
 		{
@@ -161,22 +104,10 @@ bool CSSBeamElement::updateGeometry(bool useDeformedGeom)
 
 	}
 
-	pntArr.append(crds1);
-	/*if (m_numIntegPnts > 0)
-	{
-		m_pIntegPoints = new CSSNode*[m_numIntegPnts];
-		double* xi = getSectionLocations(m_numIntegPnts);
-		for (int i = 0; i < m_numIntegPnts; i++)
-		{
-			AcGePoint3d pnt(crds1+vec*xi[i]*l);
-			m_pIntegPoints[i] = new CSSNode(0, pnt);
-			pntArr.append(pnt);
-		}
-		delete[] xi;
-	}*/
-	pntArr.append(crds2);
-	piNode->close();
-	pjNode->close();
+	pntArr.append(m_crds[0]);
+	pntArr.append(m_crds[1]);
+	m_nodePtrs[0]->close();
+	m_nodePtrs[1]->close();
 	if (pDeformedEntity == nullptr)
 	{
 		pDeformedEntity = new AcDbSpline(pntArr, vec, vec2, 3, 0);
@@ -191,7 +122,7 @@ bool CSSBeamElement::updateGeometry(bool useDeformedGeom)
 	return true;
 }
 
-double * CSSBeamElement::getSectionLocations(int numSections)
+/*double* CSSBeamElement::getSectionLocations(int numSections)
 {
 	double* xi = new double[numSections];
   switch(numSections) {
@@ -285,4 +216,4 @@ double * CSSBeamElement::getSectionLocations(int numSections)
   for (int i = 0; i < numSections; i++)
     xi[i]  = 0.5*(xi[i] + 1.0);
   return xi;
-}
+}*/

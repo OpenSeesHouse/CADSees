@@ -113,9 +113,7 @@ void ObjUtils::addNode(int tag, AcGePoint3d pnt)
 	//pNode->draw();
 	pNode->close();
 	NODEATTAGMAP.insert(std::pair<int, AcDbObjectId>(tag, id));
-	AcString crdStr;
-	crdStr.format(_T("%.3f-%.3f-%.3f"), pnt.x, pnt.y, pnt.z);
-	NODEATCRDSMAP.insert(std::pair<AcString, int>(crdStr, tag));
+	NODEATCRDSMAP.insert(std::pair<AcGePoint3d, int>(pnt, tag));
 
 }
 
@@ -127,38 +125,6 @@ void ObjUtils::addElement(std::string type, int tag, std::vector<int> nodeTags, 
 		acutPrintf(_T("Element with tag %d already exists in model\n"), tag);
 		return;
 	}
-	int nPnts = 0;
-	if (type.compare("dispBeamColumn") == 0 ||
-		type.compare("forceBeamColumn") == 0 ||
-		type.compare("nonlinearBeamColumn") == 0)
-	{
-		//obtain npnts;
-		if ((line[6].compare("Lobatto") != 0) &&
-			(line[6].compare("Legendre") != 0) &&
-			(line[6].compare("Radau") != 0) &&
-			(line[6].compare("NewtonCotes") != 0) &&
-			(line[6].compare("UserDefined") != 0) &&
-			(line[6].compare("HingeMidpoint") != 0) &&
-			(line[6].compare("HingeEndpoint") != 0) &&
-			(line[6].compare("HingeRadau") != 0) &&
-			(line[6].compare("HingeRadauTwo") != 0) &&
-			(line[6].compare("UserHinge") != 0) &&
-			(line[6].compare("DistHinge") != 0) &&
-			(line[6].compare("RegularizedHinge") != 0) &&
-			(line[6].compare("Trapezoidal") != 0) &&
-			(line[6].compare("CompositeSimpson") != 0) &&
-			(line[6].compare("FixedLocation") != 0) &&
-			(line[6].compare("LowOrder") != 0) &&
-			(line[6].compare("GaussQ") != 0) &&
-			(line[6].compare("MidDistance") != 0))
-		{
-
-			nPnts = atoi(line[5].c_str());
-		}
-		else {
-			nPnts = atoi(line[8].c_str());
-		}
-	}
 	CSSElement* pEle = 0;
 	if (type.compare("truss") == 0)
 	{
@@ -166,7 +132,7 @@ void ObjUtils::addElement(std::string type, int tag, std::vector<int> nodeTags, 
 	}
 	else if (type.compare("elasticBeamColumn") == 0)
 	{
-		pEle = new CSSElasticBeamColumn(tag, nodeTags, nPnts);
+		pEle = new CSSElasticBeamColumn(tag, nodeTags);
 
 	}
 	else if (type.compare("twoNodeLink") == 0)
@@ -176,17 +142,17 @@ void ObjUtils::addElement(std::string type, int tag, std::vector<int> nodeTags, 
 	}
 	else if (type.compare("ModElasticBeam2d") == 0 || type.compare("ModElasticBeam3d") == 0)
 	{
-		pEle = new CSSModElasticBeamColumn(tag, nodeTags, nPnts);
+		pEle = new CSSModElasticBeamColumn(tag, nodeTags);
 
 	}
 	else if (type.compare("dispBeamColumn") == 0)
 	{
-		pEle = new CSSDispBeamColumn(tag, nodeTags, nPnts);
+		pEle = new CSSDispBeamColumn(tag, nodeTags);
 
 	}
 	else if (type.compare("forceBeamColumn") == 0 || type.compare("nonlinearBeamColumn") == 0)
 	{
-		pEle = new CSSForceBeamColumn(tag, nodeTags, nPnts);
+		pEle = new CSSForceBeamColumn(tag, nodeTags);
 
 	}
 	else if (type.compare("zeroLength") == 0)
@@ -651,11 +617,16 @@ void ObjUtils::setTagsSize(double val)
 
 int ObjUtils::getNumNodesAtCrd(AcGePoint3d pnt)
 {
-	AcString crdStr;
-	crdStr.format(_T("%.3f-%.3f-%.3f"), pnt.x, pnt.y, pnt.z);
-	/*std::pair <std::multimap<AcString, int>::iterator, std::multimap<AcString, int>::iterator> ret;
-	ret = NODEATCRDSMAP.equal_range(crdStr);
-	for (std::multimap<AcString, int>::iterator it = ret.first; it != ret.second; ++it)*/
-	int num = NODEATCRDSMAP.count(crdStr);
+	int num = NODEATCRDSMAP.count(pnt);
 	return num;
+}
+bool ObjUtils::getNodeCrds(int tag, AcGePoint3d* pCrd)
+{
+	for (auto it = NODEATCRDSMAP.begin(); it != NODEATCRDSMAP.end(); ++it)
+		if (it->second == tag)
+		{
+			*pCrd = (it->first);
+			return true;
+		}
+	return false;
 }

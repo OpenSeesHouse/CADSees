@@ -61,23 +61,9 @@ public:
 	CSSZeroLength (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSZeroLength () ;
 
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
-	//----- CSSLineElement protocols
-	//- Graphics protocol
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
-
-	//- Osnap points protocol
-public:
-
-	//- Grip points protocol
-	virtual void subList() const override;
 protected:
-	Adesk::UInt32 m_iNod, m_jNod;
 	AcGePoint3d *pVertList;
 	bool initiatePnts(bool useDeformedGeom);
 public:

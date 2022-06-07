@@ -61,31 +61,22 @@ public:
 	CSSBrickElement (int tag, std::vector<int> nodeTags, std::string type) ;
 	virtual ~CSSBrickElement () ;
 
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
-	virtual void subList() const override;
 	//virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
 
 	//- Osnap points protocol
 public:
 	virtual Acad::ErrorStatus subTransformBy(const AcGeMatrix3d& xform);
 	virtual bool updateGeometry(bool useDeformedGeom);
-	virtual double getLength() const override;
 protected:
-	 std::vector<int> m_nodeTags;
-	 std::vector<int> m_cornerNodes;
-	 std::string m_type;
+	 virtual std::vector<int> getCornerNodes();
 	 AcGePoint3d *pVertexList;
 	Adesk::Int32* pFaceList;
 	double m_size[3];
-	std::vector<CSSNode*> m_nodes;
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE

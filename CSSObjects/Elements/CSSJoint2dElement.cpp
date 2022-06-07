@@ -26,105 +26,37 @@
 #include "CSSJoint2dElement.h"
 
 //-----------------------------------------------------------------------------
-Adesk::UInt32 CSSJoint2dElement::kCurrentVersionNumber =1 ;
+Adesk::UInt32 CSSJoint2dElement::kCurrentVersionNumber = 1;
 
 //-----------------------------------------------------------------------------
-ACRX_DXF_DEFINE_MEMBERS (
+ACRX_DXF_DEFINE_MEMBERS(
 	CSSJoint2dElement, CSSElement,
-	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent, 
+	AcDb::kDHL_CURRENT, AcDb::kMReleaseCurrent,
 	AcDbProxyEntity::kNoOperation, CSS_Joint2dElement,
-CADSees
-|Product Desc:     An OpenSees pre/post-processor
-|Company:          Civil Soft Science
-|WEB Address:      www.CivilSoftScience.com
+	CADSees
+	| Product Desc : An OpenSees pre / post - processor
+	| Company : Civil Soft Science
+	| WEB Address : www.CivilSoftScience.com
 )
 
 //-----------------------------------------------------------------------------
-CSSJoint2dElement::CSSJoint2dElement () : CSSElement () {
-	m_iNod = 0;
-	m_jNod = 0;
-	m_kNod = 0;
-	m_lNod = 0;
-	m_length = 0;
+CSSJoint2dElement::CSSJoint2dElement() : CSSElement() {
 	m_type = AcString(_T("Joint2d"));
 }
 
-CSSJoint2dElement::CSSJoint2dElement(int tag, std::vector<int> nodeTags) : CSSElement(tag, "Joint2d")
+CSSJoint2dElement::CSSJoint2dElement(int tag, std::vector<int> nodeTags)
+	: CSSElement(tag, nodeTags, "Joint2d")
 {
-	m_length = 0;
-	m_isNull = true;
-	m_iNod = nodeTags[0];
-	m_jNod = nodeTags[1];
-	m_kNod = nodeTags[2];
-	m_lNod = nodeTags[3];
-	initiated = false;
 }
 
-CSSJoint2dElement::~CSSJoint2dElement () {
+CSSJoint2dElement::~CSSJoint2dElement() {
 }
 
-//-----------------------------------------------------------------------------
-//----- AcDbObject protocols
-//- Dwg Filing protocol
-Acad::ErrorStatus CSSJoint2dElement::dwgOutFields (AcDbDwgFiler *pFiler) const {
-	assertReadEnabled () ;
-	//----- Save parent class information first.
-	Acad::ErrorStatus es = CSSElement::dwgOutFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be saved first
-	if ( (es = pFiler->writeUInt32 (CSSJoint2dElement::kCurrentVersionNumber)) != Acad::eOk )
-		return (es) ;
-	//----- Output params
-	if ( (es =pFiler->writeItem (m_iNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->writeItem (m_jNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->writeItem (m_kNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->writeItem (m_lNod)) != Acad::eOk )
-		return (es) ;
-	return (pFiler->filerStatus ()) ;
-}
-
-Acad::ErrorStatus CSSJoint2dElement::dwgInFields (AcDbDwgFiler *pFiler) {
-	assertWriteEnabled () ;
-	//----- Read parent class information first.
-	Acad::ErrorStatus es =CSSElement::dwgInFields (pFiler) ;
-	if ( es != Acad::eOk )
-		return (es) ;
-	//----- Object version number needs to be read first
-	Adesk::UInt32 version =0 ;
-	if ( (es =pFiler->readUInt32 (&version)) != Acad::eOk )
-		return (es) ;
-	if ( version > CSSJoint2dElement::kCurrentVersionNumber )
-		return (Acad::eMakeMeProxy) ;
-	//- Uncomment the 2 following lines if your current object implementation cannot
-	//- support previous version of that object.
-	//if ( version < CSSJoint2dElement::kCurrentVersionNumber )
-	//	return (Acad::eMakeMeProxy) ;
-	//----- Read params
-	if ( (es =pFiler->readItem (&m_iNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->readItem (&m_jNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->readItem (&m_kNod)) != Acad::eOk )
-		return (es) ;
-	if ( (es =pFiler->readItem (&m_lNod)) != Acad::eOk )
-		return (es) ;
-	if(ObjUtils::getNodeSize() == 0)
-	{
-		ObjUtils::setNodesSize(m_length*NODSIZERAT);
-		ObjUtils::setTagsSize(m_length*NODSIZERAT);
-		ObjUtils::RedrawNodeGraphics(true);
-	}
-	return (pFiler->filerStatus ()) ;
-}
 
 //-----------------------------------------------------------------------------
 //----- AcDbEntity protocols
-Adesk::Boolean CSSJoint2dElement::subWorldDraw (AcGiWorldDraw *mode) {
-	assertReadEnabled () ;
+Adesk::Boolean CSSJoint2dElement::subWorldDraw(AcGiWorldDraw* mode) {
+	assertReadEnabled();
 	const Adesk::UInt32 faceListLength = 4;
 	static const Adesk::Int32 faceList[] = { 4, 0, 1, 2, 3 };
 	//pDeformedEntity->setColorIndex(DOCDATA.eleDfrmdColor);
@@ -162,31 +94,22 @@ Adesk::Boolean CSSJoint2dElement::subWorldDraw (AcGiWorldDraw *mode) {
 
 	if (DISPOPTIONS.dispEleTags)
 	{
-		AcGeVector3d vec(crds4-crds2);
-		AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
+		static AcGeVector3d vec, vec2, normal(0, 0, 1);
+		vec = m_crds[3] - m_crds[1];
+		vec2 = m_crds[2] - m_crds[0];
 		AcGeVector3d up = vec.perpVector();
-		AcGePoint3d crds = crds1 + 0.5*vec + 0.5*vec2;
+		AcGePoint3d crds = m_crds[0] + 0.5 * vec + 0.5 * vec2;
 		AcString tagStr;
 		tagStr.format(_T("%d"), m_tag);
 		mode->geometry().text(crds, normal, AcGeVector3d(1, 0, 0), DISPOPTIONS.tagSize, 1., 0, tagStr.kACharPtr());
 	}
-	return (CSSElement::subWorldDraw (mode)) ;
+	return (AcDbEntity::subWorldDraw(mode));
 }
 
 
 void CSSJoint2dElement::subList() const
 {
 	CSSElement::subList();
-	acutPrintf(_T("\n   nodeTags[0]:\t%d"), m_iNod);
-	acutPrintf(_T("\n   nodeTags[1]:\t%d"), m_jNod);
-	acutPrintf(_T("\n   kNode:\t%d"), m_kNod);
-	acutPrintf(_T("\n   lNode:\t%d"), m_lNod);
-}
-
-double CSSJoint2dElement::getLength() const
-{
-	assertReadEnabled();
-	return m_length;
 }
 
 bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
@@ -195,85 +118,37 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
 	bool res = CSSElement::updateGeometry(useDeformedGeom);
 	if (!res)
 		return false;
-	AcDbObjectId id;
-	if (!ObjUtils::getNode(id, m_iNod))
-	{
-		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
-		return false;
-	}
-	AcDbObject   *pObj = NULL;
-	ErrorStatus es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    piNode = CSSNode::cast(pObj);
-    assert(piNode != NULL);
+	static AcGeVector3d vec1, vec2;
 
-	if (!ObjUtils::getNode(id, m_jNod))
-	{
-		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
-		piNode->close();
-		return false;
-	}
-	pObj = NULL;
-	es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    pjNode = CSSNode::cast(pObj);
-    assert(pjNode != NULL);
-	
-	if (!ObjUtils::getNode(id, m_kNod))
-	{
-		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
-		piNode->close();
-		return false;
-	}
-	pObj = NULL;
-	es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    pkNode = CSSNode::cast(pObj);
-    assert(pjNode != NULL);
-	
-	if (!ObjUtils::getNode(id, m_lNod))
-	{
-		acutPrintf(_T("CSSJoint2dElement:ERROR finding node object"));
-		piNode->close();
-		return false;
-	}
-	pObj = NULL;
-	es = acdbOpenObject(pObj, id, AcDb::kForRead);
-    assert(pObj != NULL);
-    plNode = CSSNode::cast(pObj);
-    assert(pjNode != NULL);
-	
 	if (useDeformedGeom)
 	{
-		crds1 = piNode->getDeformedCrds();
-		crds2 = pjNode->getDeformedCrds();
-		crds3 = pkNode->getDeformedCrds();
-		crds4 = plNode->getDeformedCrds();
-	} else {
-		crds1 = piNode->getCrds();
-		crds2 = pjNode->getCrds();
-		crds3 = pkNode->getCrds();
-		crds4 = plNode->getCrds();
+		m_crds[0] = m_nodePtrs[0]->getDeformedCrds();
+		m_crds[1] = m_nodePtrs[1]->getDeformedCrds();
+		m_crds[2] = m_nodePtrs[2]->getDeformedCrds();
+		m_crds[3] = m_nodePtrs[3]->getDeformedCrds();
 	}
-	if (!initiated)
-	{
-		vec1 = (crds2 - crds4);
-		vec2 = (crds3 - crds1);
-		initiated = true;
+	else {
+		m_crds[0] = m_nodePtrs[0]->getCrds();
+		m_crds[1] = m_nodePtrs[1]->getCrds();
+		m_crds[2] = m_nodePtrs[2]->getCrds();
+		m_crds[3] = m_nodePtrs[3]->getCrds();
 	}
-	m_length = 0.5*(vec1.length()+ vec2.length());
-	AcGeVector3d v1(vec1.normal()), v2(vec2.normal()), v3(v1), v4(v2);
+	static AcGeVector3d v1, v2, v3, v4;
+	v1 = (m_nodePtrs[1]->getCrds() - m_nodePtrs[3]->getCrds()).normal();
+	v2 = (m_nodePtrs[2]->getCrds() - m_nodePtrs[0]->getCrds()).normal();
+	v3 = v1;
+	v4 = v2;;
 	if (useDeformedGeom)
 	{
-		v1.rotateBy(piNode->getRotation()[2], AcGeVector3d::kZAxis);
-		v2.rotateBy(pjNode->getRotation()[2], AcGeVector3d::kZAxis);
-		v3.rotateBy(pkNode->getRotation()[2], AcGeVector3d::kZAxis);
-		v4.rotateBy(plNode->getRotation()[2], AcGeVector3d::kZAxis);
+		v1.rotateBy(m_nodePtrs[0]->getRotation()[2], AcGeVector3d::kZAxis);
+		v2.rotateBy(m_nodePtrs[1]->getRotation()[2], AcGeVector3d::kZAxis);
+		v3.rotateBy(m_nodePtrs[2]->getRotation()[2], AcGeVector3d::kZAxis);
+		v4.rotateBy(m_nodePtrs[3]->getRotation()[2], AcGeVector3d::kZAxis);
 	}
-	AcGeLine3d line1(crds1, v1);
-	AcGeLine3d line2(crds2, v2);
-	AcGeLine3d line3(crds3, v3);
-	AcGeLine3d line4(crds4, v4);
+	AcGeLine3d line1(m_crds[0], v1);
+	AcGeLine3d line2(m_crds[1], v2);
+	AcGeLine3d line3(m_crds[2], v3);
+	AcGeLine3d line4(m_crds[3], v4);
 	if (useDeformedGeom)
 	{
 		res = line1.intersectWith(line2, dfrmdVrtxList[0]);
@@ -290,12 +165,12 @@ bool CSSJoint2dElement::updateGeometry(bool useDeformedGeom)
 	}
 	m_isNull = false;
 
-	//piNode->setShiftVec(vec1);
-	//pjNode->setShiftVec(-vec2);
-	piNode->close();
-	pjNode->close();
-	pkNode->close();
-	plNode->close();
+	//m_nodePtrs[0]->setShiftVec(vec1);
+	//m_nodePtrs[1]->setShiftVec(-vec2);
+	m_nodePtrs[0]->close();
+	m_nodePtrs[1]->close();
+	m_nodePtrs[2]->close();
+	m_nodePtrs[3]->close();
 
 	m_isNull = false;
 	return true;

@@ -60,14 +60,8 @@ protected:
 	static Adesk::UInt32 kCurrentVersionNumber ;
 public:
 	CSSModElasticBeamColumn () ;
-	CSSModElasticBeamColumn (int tag, std::vector<int> nodeTags, int nIntegPnts) ;
+	CSSModElasticBeamColumn (int tag, std::vector<int> nodeTags) ;
 	virtual ~CSSModElasticBeamColumn () ;
-
-	//----- AcDbObject protocols
-	//- Dwg Filing protocol
-	virtual Acad::ErrorStatus dwgOutFields (AcDbDwgFiler *pFiler) const ;
-	virtual Acad::ErrorStatus dwgInFields (AcDbDwgFiler *pFiler) ;
-
 
 } ;
 
