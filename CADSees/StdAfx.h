@@ -73,15 +73,16 @@
 //-----------------------------------------------------------------------------
 #include "DocData.h" //- Your document specific data class holder
 #include "boost/tokenizer.hpp"
+#include "../CSSObjects/CSSDocData.h"
 #include "../CSSObjects/ObjUtils/objUtils.h"
 #include "../CSSObjects/Recorders/CSSRecorder.h"
 #include "../CSSObjects/Elements/CSSLineElement.h"
 #include "../CSSObjects/Node/CSSNode.h"
 #include "../CSSObjects/Cube/CSSCube.h"
 
-#define DOCDATA DocVars.docData(curDoc())
+#define DOCDATA DocVars.docData(curDoc()).getData()
 #define INPUTFILE DocVars.docData(curDoc()).inputFile
-#define DISPOPTIONS DocVars.docData(curDoc()).dispOptions
+#define DISPOPTIONS DocVars.docData(curDoc()).getData()->getDispOptions()
 #define LENGTHUNIT DocVars.docData(curDoc()).lengthUnit
 #define LENGTHFAC DocVars.docData(curDoc()).lengthFac
 #define BTRID DocVars.docData(curDoc()).btrId

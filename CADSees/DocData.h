@@ -30,17 +30,8 @@
 //----- Here you can store the document / database related data.
 #define WEBADDRESS _T("www.OpenSeesHouse.com")
 enum LengthUnit {m = 1, cm = 2, mm = 3, in = 4, ft = 5};
-struct DispOptions
-{
-	bool dispNodeTags;
-	bool dispEleTags;
-	bool dispDeformedShape;
-	bool dispUndeformedWire;
-	double nodeSize;
-	double tagSize;
-	double defNodeSize;
-	double defTagSize;
-};
+class CSSDocData;
+class CSSEdReactor;
 class CDocData {
 
 	//----- TODO: here you can add your variables
@@ -52,6 +43,9 @@ public:
 	LengthUnit lengthUnit;
 	double lengthFac;
 	std::string inputFile;
-	DispOptions dispOptions;
+	CSSEdReactor* pDocReactor;
+	CSSDocData* getData();
 	AcDbObjectId btrId;
+private:
+	CSSDocData* pData;
 } ;

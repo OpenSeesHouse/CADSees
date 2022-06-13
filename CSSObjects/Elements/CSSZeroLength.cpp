@@ -96,7 +96,7 @@ bool CSSZeroLength::initiatePnts(bool useDeformedGeom)
 	if (vec.length() < 1.e-5)
 		vec.set(1,0,0);
 	double Ln = vec.length()*ZLHTOLRAT;
-	AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
+	AcGeVector3d normal = DOCDATA->getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 	normal = -vec.crossProduct(normal);
 	normal.normalize();
 	int i =  0;

@@ -64,11 +64,72 @@ AcDbBlockTableRecord* ObjUtils::getModelSpace(OpenMode mode)
 }
 
 
+void ObjUtils::setDocData(CSSDocData*& data)
+{
+	DocVars.docData(curDoc()).pData = data;
+}
+
+CSSDocData* ObjUtils::getDocData()
+{
+	return DOCDATA;
+}
+
+/*double ObjUtils::getNodeSize()
+{
+	return DISPOPTIONS.nodeSize;
+}
+
+int ObjUtils::getNdm()
+{
+	return DOCDATA->getNdm();
+}
+
+int ObjUtils::getNdof()
+{
+	return DOCDATA->getNdof();
+}
+
 void ObjUtils::setNodesSize(double val)
 {
 	DISPOPTIONS.nodeSize = val;
 	DISPOPTIONS.nodeSizeChanged = true;
 }
+
+void ObjUtils::setNdm(int val)
+{
+	//AcApDocument *pDoc = curDoc();
+	DOCDATA->NDM = val;
+}
+
+void ObjUtils::setNdof(int val)
+{
+	DOCDATA->NDOF = val;
+}
+
+void ObjUtils::setShowDeformed(bool val)
+{
+	DISPOPTIONS.dispDeformedShape = val;
+}
+
+void ObjUtils::setShowUndeformedWire(bool val)
+{
+	DISPOPTIONS.dispUndeformedWire = val;
+}
+
+void ObjUtils::setShowNodeTags(bool val)
+{
+	DISPOPTIONS.dispNodeTags = val;
+}
+
+void ObjUtils::setShowEleTags(bool val)
+{
+	DISPOPTIONS.dispEleTags = val;
+}
+
+void ObjUtils::setTagsSize(double val)
+{
+	DISPOPTIONS.tagSize = val;
+}*/
 
 void ObjUtils::addPile(AcGePoint3d pnt1, AcGePoint3d pnt2)
 {
@@ -101,7 +162,7 @@ void ObjUtils::addNode(int tag, AcGePoint3d pnt)
 		return;
 	}
 	int num = getNumNodesAtCrd(pnt);
-	CSSNode* pNode = new CSSNode(tag, DOCDATA.NDOF, pnt, num);
+	CSSNode* pNode = new CSSNode(tag, DOCDATA->getNdof(), pnt, num);
 	AcDbBlockTableRecord* pBTR = getModelSpace(OpenMode::kForWrite);
 	assert(pBTR != NULL);
 	ErrorStatus es = pBTR->appendAcDbEntity(id, pNode);
@@ -110,7 +171,7 @@ void ObjUtils::addNode(int tag, AcGePoint3d pnt)
 		acutPrintf(_T("failed to add Node with tag %d to BTR\n"), tag);
 		return;
 	}
-	//pNode->draw();
+	pNode->initialize();
 	pNode->close();
 	NODEATTAGMAP.insert(std::pair<int, AcDbObjectId>(tag, id));
 	NODEATCRDSMAP.insert(std::pair<AcGePoint3d, int>(pnt, tag));
@@ -245,94 +306,6 @@ void ObjUtils::GetAllElements(std::vector<AcDbObjectId>& resIds)
 	}
 }
 
-//AcDbObjectId ObjUtils::GetAnyNode()
-//{
-//	AcDbDatabase *pDb = acdbHostApplicationServices()->workingDatabase();
-//	AcTransaction *pTrans = acTransactionManagerPtr()->startTransaction();
-//	
-//	//AcDbBlockTableRecordPointer pBTR(ACDB_MODEL_SPACE, pDb, OpenMode::kForRead);
-//	//if (pBTR.openStatus() != eOk)
-//	//{
-//	//	acedAlert(_T("GetAllNodes:: error closing symbol table"));
-//	//	return;
-//	//}
-//	AcDbBlockTable * pBT;
-//	ErrorStatus es = pDb->getSymbolTable(pBT, kForRead);
-//	if (es != eOk)
-//	{
-//		acedAlert(_T("GetAllNodes:: error getting symbol table"));
-//		return AcDbObjectId::kNull;
-//	}
-//	AcDbBlockTableRecord *pBTR;
-//	AcDbObjectId id;
-//	es = pBT->getAt(ACDB_MODEL_SPACE, id);
-//	if (es != eOk)
-//	{
-//		acedAlert(_T("GetAllNodes:: error getting model space ObjectId"));
-//		return AcDbObjectId::kNull;
-//	}
-//	es = pBT->close();
-//	if (es != eOk)
-//	{
-//		acedAlert(_T("GetAllNodes:: error closing symbol table"));
-//		return AcDbObjectId::kNull;
-//	}
-//	es = pTrans->getObject((AcDbObject*&)pBTR, id, kForRead);
-//	if (es != eOk)
-//	{
-//		acedAlert(_T("GetAllNodes:: error getting pBTR from transaction"));
-//		return AcDbObjectId::kNull;
-//	}
-//	AcDbBlockTableRecordIterator *pIter;
-//	es = pBTR->newIterator(pIter);
-//	if (es != eOk)
-//	{
-//		acedAlert(_T("GetAllNodes:: error getting iterator"));
-//		return AcDbObjectId::kNull;
-//	}
-//	AcDbEntity *pEnt;
-//	CSSNode* pNode;
-//	id = AcDbObjectId::kNull;
-//	for(pIter->start(); !pIter->done(); pIter->step())
-//	{
-//		es = pIter->getEntity(pEnt, kForRead);
-//		if (es != eOk)
-//		{
-//			/*acedAlert(_T("GetAllNodes:: error getting entity"));
-//			return false;*/
-//			continue;
-//		}
-//		pNode = CSSNode::cast(pEnt);
-//		if (pNode == NULL)
-//		{
-//			es = pEnt->close();
-//			if (es != eOk)
-//			{
-//				acedAlert(_T("GetAllNodes:: error closing entity"));
-//				return id;
-//			}
-//			continue;
-//		}
-//		es = pNode->close();
-//		if (es != eOk)
-//		{
-//			acedAlert(_T("GetAllNodes:: error closing panel"));
-//			return id;
-//		}
-//		id = pNode->objectId();
-//		break;
-//	}
-//	es = pBTR->close();
-//	if (es != eOk)
-//	{
-//		acedAlert(_T("GetAllNodes:: error closing BTR"));
-//		return AcDbObjectId::kNull;
-//	}
-//	delete pIter;
-//	acTransactionManagerPtr()->abortTransaction();
-//	return id;
-//}
-
 void ObjUtils::RedrawGraphics(bool redrawBody)
 {
 	RedrawNodeGraphics(redrawBody);
@@ -359,7 +332,6 @@ void ObjUtils::RedrawNodeGraphics(bool redrawBody)
 		pNode->draw();
 	}
 	actrTransactionManager->endTransaction();
-	DISPOPTIONS.nodeSizeChanged = false;
 }
 
 void ObjUtils::RedrawElementsGraphics(bool redrawBody)
@@ -387,12 +359,6 @@ void ObjUtils::RedrawElementsGraphics(bool redrawBody)
 bool ObjUtils::getShowDeformed()
 {
 	return DISPOPTIONS.dispDeformedShape;
-}
-
-
-double ObjUtils::getNodeSize()
-{
-	return DISPOPTIONS.nodeSize;
 }
 
 bool ObjUtils::getNode(AcDbObjectId& resId, int tag)
@@ -565,54 +531,6 @@ void ObjUtils::GetAllRecorders(std::vector<AcDbObjectId>& resIds)
 		acutPrintf(_T("getRecorder:: error closing Dictionary"));
 	}
 	delete pIter;
-}
-
-int ObjUtils::getNdm()
-{
-	return DOCDATA.NDM;
-}
-
-int ObjUtils::getNdof()
-{
-	return DOCDATA.NDOF;
-}
-
-void ObjUtils::setNdm(int val)
-{
-	//AcApDocument *pDoc = curDoc();
-	DOCDATA.NDM = val;
-	//DocVars.docData(curDoc()).NDM = val;
-	//NDM = val;
-}
-
-void ObjUtils::setNdof(int val)
-{
-	DOCDATA.NDOF = val;
-}
-
-void ObjUtils::setShowDeformed(bool val)
-{
-	DISPOPTIONS.dispDeformedShape = val;
-}
-
-void ObjUtils::setShowUndeformedWire(bool val)
-{
-	DISPOPTIONS.dispUndeformedWire = val;
-}
-
-void ObjUtils::setShowNodeTags(bool val)
-{
-	DISPOPTIONS.dispNodeTags = val;
-}
-
-void ObjUtils::setShowEleTags(bool val)
-{
-	DISPOPTIONS.dispEleTags = val;
-}
-
-void ObjUtils::setTagsSize(double val)
-{
-	DISPOPTIONS.tagSize = val;
 }
 
 int ObjUtils::getNumNodesAtCrd(AcGePoint3d pnt)

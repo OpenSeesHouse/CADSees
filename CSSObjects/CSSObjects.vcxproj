@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="acrxEntryPoint.cpp" />
+    <ClCompile Include="CSSDocData.cpp" />
     <ClCompile Include="CSSObjects.cpp" />
     <ClCompile Include="Cube\CSSCube.cpp" />
     <ClCompile Include="DocData.cpp" />
@@ -116,6 +117,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CSSDocData.h" />
     <ClInclude Include="Cube\CSSCube.h" />
     <ClInclude Include="DocData.h" />
     <ClInclude Include="Elements\CSSBrickElement.h" />

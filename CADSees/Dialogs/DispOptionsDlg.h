@@ -26,6 +26,7 @@ protected:
 	bool m_initiated;
 	virtual void OnCancel();
 public:
+	double m_defTagSize, m_defNodeSize;
 	BOOL m_dispNodeTags;
 	BOOL m_dispEleTags;
 	int m_tagSizeScale;

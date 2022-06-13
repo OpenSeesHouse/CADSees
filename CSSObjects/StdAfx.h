@@ -49,6 +49,7 @@
 #include "arxHeaders.h"
 #include "boost/tokenizer.hpp"
 #include "DocData.h" //- Your document specific data class holder
+#include "CSSDocData.h" //- Your document specific data class holder
 extern AcApDataManager<CDocData> DocVars ;
 
 #include "ObjUtils/ObjUtils.h"
@@ -70,8 +71,14 @@ extern AcApDataManager<CDocData> DocVars ;
 #include "Matrix/Matrix.h"
 #include "Matrix/Vector.h"
 
-#define DOCDATA DocVars.docData(curDoc())
-#define DISPOPTIONS DocVars.docData(curDoc()).dispOptions
+#define wireColor (Adesk::UInt16)(254)
+#define elementColor (Adesk::UInt16)(7)
+#define eleDfrmdColor (Adesk::UInt16)(4)
+#define nodeColor (Adesk::UInt16)(7)
+#define nodeDfrmdColor (Adesk::UInt16)(30)
+
+#define DOCDATA DocVars.docData(curDoc()).getData()
+#define DISPOPTIONS DocVars.docData(curDoc()).getDispOptions()
 #define BTRID DocVars.docData(curDoc()).btrId
 #define NODEATCRDSMAP DocVars.docData(curDoc()).nodeAtCrdsMap
 #define NODEATTAGMAP DocVars.docData(curDoc()).nodeAtTagMap

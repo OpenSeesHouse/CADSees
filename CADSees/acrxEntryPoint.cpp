@@ -33,6 +33,15 @@
 
 //-----------------------------------------------------------------------------
 //----- ObjectARX EntryPoint
+class CSSEdReactor : public AcEditorReactor
+{
+public:
+
+	virtual void endDwgOpen(const ACHAR* fileName, AcDbDatabase* pDb)
+	{
+
+	}
+};
 
 class CCADSeesApp : public AcRxArxApp {
 
@@ -55,11 +64,21 @@ public:
 		//acutPrintf(_T("     A graphical pre/post-processor for OpenSees software:\n"));
 		//acutPrintf(_T("**more at:\n"));
 		//acutPrintf(_T("***************www.CivilSoftScience.com***************:\n"));
+		//CSSEdReactor* pEdr = new CSSEdReactor();
+		//DocVars.docData(curDoc()).pDocReactor = pEdr;
+		//acdbHostApplicationServices()->()->addReactor(pEdr);
 		acutPrintf(_T("\n******CADSees.arx Loaded successfully*****\n"));
 		return (retCode);
 
 	}
 
+	virtual AcRx::AppRetCode On_kLoadDwgMsg(void* pkt) {
+		AcRx::AppRetCode retCode = AcRxArxApp::On_kLoadDwgMsg(pkt);
+		DOCDATA;
+		DISPOPTIONS.nodeSizeChanged = true;
+		ObjUtils::RedrawGraphics(true);
+		return (retCode);
+	}
 	virtual AcRx::AppRetCode On_kUnloadAppMsg(void* pkt) {
 		// TODO: Add your code here
 
@@ -95,7 +114,6 @@ public:
 	}
 
 	static void CADSees_importOPS() {
-		CDocData& docData = DOCDATA;
 		std::vector<std::vector<std::string>> allEleCommands;
 		std::vector<std::vector<std::string>> allNodeCommands;
 		resbuf* file;
@@ -162,8 +180,8 @@ public:
 					LENGTHFAC = 0.0254;
 					break;
 				}
-				ObjUtils::setNodesSize(DISPOPTIONS.nodeSize * LENGTHFAC);
-				ObjUtils::setTagsSize(DISPOPTIONS.tagSize * LENGTHFAC);
+				DOCDATA->setNodeSize(DISPOPTIONS.nodeSize * LENGTHFAC);
+				DOCDATA->setTagsSize(DISPOPTIONS.tagSize * LENGTHFAC);
 				continue;
 			}
 			if (words[0].compare("model") == 0)

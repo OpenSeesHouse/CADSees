@@ -32,20 +32,7 @@ AcApDataManager<CDocData> DocVars ;
 //-----------------------------------------------------------------------------
 //----- Implementation of the document data class.
 CDocData::CDocData () {
-	dispOptions.dispNodeTags = false;
-	dispOptions.dispEleTags = false;
-	dispOptions.dispDeformedShape = false;
-	dispOptions.dispUndeformedWire = true;
-	dispOptions.tagSize = 0.15;
-	dispOptions.nodeSize = 0.05;
-	dispOptions.nodeSizeChanged = false;
-	NDM = 0;
-	NDOF = 0;
-	wireColor = 254;
-	elementColor = 7;
-	eleDfrmdColor = 4;
-	nodeColor = 7;
-	nodeDfrmdColor = 30;
+	pData = NULL;
 	btrId = NULL;
 }
 
@@ -54,6 +41,17 @@ CDocData::CDocData (const CDocData &data) {
 	*this = data;
 }
 
+CSSDocData* CDocData::getData() {
+	return pData;
+}
+
 //-----------------------------------------------------------------------------
-CDocData::~CDocData () {
+CDocData::~CDocData ()  {
+}
+
+CSSDocData::DispOptions CDocData::getDispOptions()
+{
+	if (pData != NULL)
+		return pData->getDispOptions();
+	return CSSDocData::DispOptions();
 }

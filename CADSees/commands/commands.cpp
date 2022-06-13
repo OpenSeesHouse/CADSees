@@ -88,8 +88,8 @@ void setModel(std::vector<std::string> line)
 			acedAlert(msg.kACharPtr());
 		}
 	}
-	ObjUtils::setNdm(ndm);
-	ObjUtils::setNdof(ndf);
+	DOCDATA->setNdm(ndm);
+	DOCDATA->setNdof(ndf);
 }
 
 void addNode(std::vector<std::string> line)
@@ -241,9 +241,7 @@ void ReadResponse(std::string folder)
 		pRcrdr->applySelf(-1., 1);
 	}
 	actrTransactionManager->endTransaction();
-	DISPOPTIONS.dispDeformedShape = true;
-	ObjUtils::setShowDeformed(true);
-	ObjUtils::RedrawGraphics(true);
+	DOCDATA->dispDeformedShape(true, true);
 }
 
 
@@ -277,9 +275,7 @@ double SetDeformedState(int n, double fac)
 		}
 	}
 	actrTransactionManager->endTransaction();
-	DISPOPTIONS.dispDeformedShape = true;
-	ObjUtils::setShowDeformed(true);
-	ObjUtils::RedrawGraphics(true);
+	DOCDATA->dispDeformedShape(true, true);
 	Vector timeVec = CSSRecorder::getTimeVec();
 	if (timeVec.Size() <= n)
 		return 0;

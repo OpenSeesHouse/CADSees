@@ -101,6 +101,7 @@ Acad::ErrorStatus CSSElement::dwgOutFields (AcDbDwgFiler *pFiler) const {
 		if ((es = pFiler->writeItem(pnt)) != Acad::eOk)
 			return (es);
 	}
+
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -139,13 +140,12 @@ Acad::ErrorStatus CSSElement::dwgInFields (AcDbDwgFiler *pFiler) {
 			return (es);
 		m_nodePtrs.push_back(0);
 	}
-	std::map<int, AcDbObjectId>::iterator it = ELEMATTAGMAP.find(m_tag);
+	auto it = ELEMATTAGMAP.find(m_tag);
 	if (it == ELEMATTAGMAP.end())
 	{
 		 ELEMATTAGMAP.insert(std::pair<int, AcDbObjectId>(m_tag, this->objectId()));
 	}
 	m_isNull = true;
-	updateGeometry(false);
 	return (pFiler->filerStatus ()) ;
 }
 
@@ -199,7 +199,11 @@ bool CSSElement::updateGeometry(bool useDeformedGeom)
 		}
 		pObj = NULL;
 		es = acdbOpenObject(pObj, id, AcDb::kForRead);
-		assert(pObj != NULL);
+		if (pObj == NULL)
+		{
+			acutPrintf(_T("CSSElement::updateGeometry: failed to open node object for read; es = %s\n"), es);
+			return false;
+		}
 		m_nodePtrs[i] = CSSNode::cast(pObj);
 		assert(m_nodePtrs[i] != NULL);
 		i++;
@@ -221,19 +225,19 @@ Adesk::Boolean CSSElement::subWorldDraw (AcGiWorldDraw *mode) {
 	if (pUndeformedEntity == NULL || pDeformedEntity == NULL)
 		return (AcDbEntity::subWorldDraw(mode));
 
-	pDeformedEntity->setColorIndex(DOCDATA.eleDfrmdColor);
+	pDeformedEntity->setColorIndex(eleDfrmdColor);
 	if (ObjUtils::getShowDeformed())
 	{
 		mode->geometry().draw(pDeformedEntity);
 		if (DISPOPTIONS.dispUndeformedWire)
 		{
-			pUndeformedEntity->setColorIndex(DOCDATA.wireColor);
+			pUndeformedEntity->setColorIndex(wireColor);
 			mode->geometry().draw(pUndeformedEntity);
 		}
 	}
 	else
 	{
-		pUndeformedEntity->setColorIndex(DOCDATA.elementColor);
+		pUndeformedEntity->setColorIndex(elementColor);
 		mode->geometry().draw(pUndeformedEntity);
 	}
 	return (AcDbEntity::subWorldDraw (mode)) ;

@@ -111,6 +111,9 @@
     <ClCompile Include="Elements\CSSTwoNodeLink.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="CSSDocData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -184,6 +187,9 @@
     </ClInclude>
     <ClInclude Include="Elements\CSSTwoNodeLink.h">
       <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="CSSDocData.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

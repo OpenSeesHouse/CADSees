@@ -22,6 +22,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void OnCancel();
 	afx_msg LRESULT OnAcadKeepFocus (WPARAM, LPARAM) ;
 	virtual BOOL OnInitDialog();
 	DECLARE_MESSAGE_MAP()

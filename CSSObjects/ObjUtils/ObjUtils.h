@@ -49,24 +49,19 @@
 class CSSNode;
 class CSSLineElement;
 class AcDbBlockTableRecord;
+class CSSDocData;
 //-----------------------------------------------------------------------------
 class DLLIMPEXP ObjUtils {
 public:
 	static std::vector<std::string> pars(std::string str, const char* delimiter);
 	static AcDbObjectId getModelSpaceId();
 	static AcDbBlockTableRecord* getModelSpace(OpenMode mode);
-	static bool getNode(AcDbObjectId& resId, int tag);
-	static bool getNodeCrds(int tag, AcGePoint3d*);
-	static bool getElement(AcDbObjectId* pResId, int tag);
-	static bool getRecorder(AcDbObjectId* pId, int obj_tag, int dof, const char* respType);
-	static void GetAllRecorders(std::vector<AcDbObjectId> &resIds);
-	static int getNdm();
+	static void setDocData(CSSDocData*& data);
+	//static void setRlsData(bool rls) {DocVars.docData(curDoc()).relsData = rls;}
+	static CSSDocData* getDocData();
+	/*static int getNdm();
 	static int getNdof();
-	static int getNumNodesAtCrd(AcGePoint3d pnt);
-	static void GetAllNodes(std::vector<AcDbObjectId>& resIds);
-	static void GetAllElements(std::vector<AcDbObjectId>& resids);
-	//static AcDbObjectId GetAnyNode();
-
+	static double getNodeSize();
 	static void setNdm(int val);
 	static void setNdof(int val);
 	static void setShowDeformed(bool deformed);
@@ -74,7 +69,17 @@ public:
 	static void setShowNodeTags(bool val);
 	static void setShowEleTags(bool val);
 	static void setTagsSize(double val);
-	static void setNodesSize(double val);
+	static void setNodesSize(double val);*/
+
+	static bool getNode(AcDbObjectId& resId, int tag);
+	static bool getNodeCrds(int tag, AcGePoint3d*);
+	static bool getElement(AcDbObjectId* pResId, int tag);
+	static bool getRecorder(AcDbObjectId* pId, int obj_tag, int dof, const char* respType);
+	static void GetAllRecorders(std::vector<AcDbObjectId> &resIds);
+	static int getNumNodesAtCrd(AcGePoint3d pnt);
+	static void GetAllNodes(std::vector<AcDbObjectId>& resIds);
+	static void GetAllElements(std::vector<AcDbObjectId>& resids);
+	//static AcDbObjectId GetAnyNode();
 
 	static void addPile(AcGePoint3d vertex, AcGePoint3d vertex2);
 	static void addCube(AcGePoint3d vertex, double sizeX, double sizeY, double sizeZ);
@@ -85,6 +90,5 @@ public:
 	static void RedrawNodeGraphics(bool redrawBody = false);
 	static void RedrawElementsGraphics(bool redrawBody = false);
 	static bool getShowDeformed();
-	static double getNodeSize();
 } ;
 

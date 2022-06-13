@@ -11,6 +11,8 @@ IMPLEMENT_DYNAMIC(DispOptionsDlg, CAcUiDialog)
 DispOptionsDlg::DispOptionsDlg(CWnd* pParent, HINSTANCE hInstance) : CAcUiDialog (DispOptionsDlg::IDD, pParent, hInstance)
 , m_dispNodeTags(DISPOPTIONS.dispNodeTags)
 , m_dispEleTags(DISPOPTIONS.dispEleTags)
+, m_defTagSize (DISPOPTIONS.tagSize)
+, m_defNodeSize (DISPOPTIONS.nodeSize)
 , m_tagSizeScale(1)
 , m_nodeSizeScale(1)
 , m_initiated(false)
@@ -68,17 +70,7 @@ void DispOptionsDlg::OnBnClickedDispNodesCheck()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-	if (m_dispNodeTags == 1)
-	{
-		DISPOPTIONS.dispNodeTags = true;
-		ObjUtils::setShowNodeTags(true);
-	}
-	else
-	{
-		DISPOPTIONS.dispNodeTags = false;
-		ObjUtils::setShowNodeTags(false);
-	}
-	ObjUtils::RedrawNodeGraphics(false);
+	DOCDATA->dispNodeTags((bool)m_dispNodeTags);
 	acedUpdateDisplay();
 }
 
@@ -87,61 +79,40 @@ void DispOptionsDlg::OnBnClickedDispElementsCheck()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-	if (m_dispEleTags == 1)
-	{
-		DISPOPTIONS.dispEleTags = true;
-		ObjUtils::setShowEleTags(true);
-	}
-	else
-	{
-		DISPOPTIONS.dispEleTags = false;
-		ObjUtils::setShowEleTags(false);
-	}
-	ObjUtils::RedrawElementsGraphics(false);
+	DOCDATA->dispEleTags((bool)m_dispEleTags);
 	acedUpdateDisplay();
 }
 
 
 void DispOptionsDlg::OnEnChangeTagSizeEdit()
 {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CAcUiDialog::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
 	if (!m_initiated)
 		return;
 	UpdateData(TRUE);
 	if (m_tagSizeScale < 1)
 		m_tagSizeScale = 1;
-	double val = DISPOPTIONS.defTagSize;
+	double val = m_defTagSize;
 	val *= (double)m_tagSizeScale/100.0;
-	ObjUtils::setTagsSize(val);
-	ObjUtils::RedrawGraphics(false);
+	DOCDATA->setTagsSize(val);
 	acedUpdateDisplay();
 }
 
 
 void DispOptionsDlg::OnEnChangeNodeSizeEdit()
 {
-	// TODO:  If this is a RICHEDIT control, the control will not
-	// send this notification unless you override the CAcUiDialog::OnInitDialog()
-	// function and call CRichEditCtrl().SetEventMask()
-	// with the ENM_CHANGE flag ORed into the mask.
 	if (!m_initiated)
 		return;
 	UpdateData(TRUE);
 	if (m_nodeSizeScale < 1)
 		m_nodeSizeScale = 1;
-	double val = DISPOPTIONS.defNodeSize;
+	double val = m_defNodeSize;
 	val *= (double)m_nodeSizeScale/100.0;
-	ObjUtils::setNodesSize(val);
-	ObjUtils::RedrawNodeGraphics(true);
+	DOCDATA->setNodeSize(val);
 	acedUpdateDisplay();
 }
 
 void DispOptionsDlg::OnCancel()
 {
-	DISPOPTIONS.nodeSize = DISPOPTIONS.defNodeSize * (double)m_nodeSizeScale/100.;
-	DISPOPTIONS.tagSize = DISPOPTIONS.defTagSize * (double)m_tagSizeScale/100.0;
+	DOCDATA->save();
 	CAcUiDialog::OnCancel();
 }

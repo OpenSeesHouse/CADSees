@@ -75,7 +75,7 @@ Adesk::Boolean CSSBrickElement::subWorldDraw (AcGiWorldDraw *mode) {
 	if (DISPOPTIONS.dispEleTags)
 	{
 		 AcGeVector3d vec(pVertexList[1] - pVertexList[0]);
-		 AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
+		 AcGeVector3d normal = DOCDATA->getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 		 AcGeVector3d up = vec.perpVector();
 		 AcGePoint3d crds = pVertexList[0] + 0.5 * vec + 0.03 * vec.length() * up;
 		 AcString tagStr;

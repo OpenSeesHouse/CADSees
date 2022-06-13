@@ -67,10 +67,10 @@ public:
 
 	//----- AcDbEntity protocols
 	//- Graphics protocol
+	void initialize();
 protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 	virtual Adesk::UInt32 subSetAttributes (AcGiDrawableTraits *traits) ;
-	void initialize();
 
 	//- Osnap points protocol
 public:

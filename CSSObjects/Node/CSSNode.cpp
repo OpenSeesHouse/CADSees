@@ -97,8 +97,8 @@ Acad::ErrorStatus CSSNode::dwgOutFields (AcDbDwgFiler *pFiler) const {
 		return (es) ;
 	if ( (es =pFiler->writeItem (m_numDouplPos)) != Acad::eOk )
 		return (es) ;
-
-	return (pFiler->filerStatus ()) ;
+	es = pFiler->filerStatus();
+	return es;
 }
 
 Acad::ErrorStatus CSSNode::dwgInFields (AcDbDwgFiler *pFiler) {
@@ -130,22 +130,18 @@ Acad::ErrorStatus CSSNode::dwgInFields (AcDbDwgFiler *pFiler) {
 		return (es) ;
 	if ( (es =pFiler->readItem (&m_numDouplPos)) != Acad::eOk )
 		return (es) ;
-	if (ObjUtils::getNdm() == 0)
-	{
-		if (m_NDof == 3)
-		{
-			ObjUtils::setNdm(2);
-		} else
-		{
-			ObjUtils::setNdm(3);
-		}
-	}
-	std::map<int, AcDbObjectId>::iterator it = NODEATTAGMAP.find(m_tag);
+	auto it = NODEATTAGMAP.find(m_tag);
 	if (it == NODEATTAGMAP.end())
 	{
 		 NODEATTAGMAP.insert(std::pair<int, AcDbObjectId>(m_tag, this->objectId()));
 	}
-	return (pFiler->filerStatus ()) ;
+	auto it2 = NODEATCRDSMAP.find(m_crds);
+	if (it2 == NODEATCRDSMAP.end() || it2->second != m_tag)
+	{
+		 NODEATCRDSMAP.insert(std::pair<AcGePoint3d,int>(m_crds,m_tag));
+	}
+	es = pFiler->filerStatus();
+	return es ;
 }
 
 //-----------------------------------------------------------------------------
@@ -153,19 +149,19 @@ Acad::ErrorStatus CSSNode::dwgInFields (AcDbDwgFiler *pFiler) {
 Adesk::Boolean CSSNode::subWorldDraw (AcGiWorldDraw *mode) {
 	assertReadEnabled () ;
 	if (pUndeformedCube == 0)
-		initialize();
+		return (AcDbEntity::subWorldDraw(mode));
 	if (ObjUtils::getShowDeformed())
 	{
 		mode->geometry().draw(pDeformedCube);
 		if (DISPOPTIONS.dispUndeformedWire)
 		{
-			pUndeformedCube->setColorIndex(DOCDATA.wireColor);
+			pUndeformedCube->setColorIndex(wireColor);
 			mode->geometry().draw(pUndeformedCube);
 		}
 	}
 	else
 	{
-		pUndeformedCube->setColorIndex(DOCDATA.nodeColor);
+		pUndeformedCube->setColorIndex(nodeColor);
 		mode->geometry().draw(pUndeformedCube);
 	}
 	if (DISPOPTIONS.dispNodeTags)
@@ -178,7 +174,7 @@ Adesk::Boolean CSSNode::subWorldDraw (AcGiWorldDraw *mode) {
 			AcGeVector3d perp = vec.perpVector().normal();
 			cntr += perp*DISPOPTIONS.tagSize*m_numDouplPos;
 		}
-		AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
+		AcGeVector3d normal = DOCDATA->getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 		AcString tagStr;
 		tagStr.format(_T("%d"), m_tag);
 		mode->geometry().text(cntr+vec, normal, vec, DISPOPTIONS.tagSize, 1, 0, tagStr.kACharPtr());
@@ -278,10 +274,15 @@ void CSSNode::subList() const
 
 Acad::ErrorStatus CSSNode::subErase(Adesk::Boolean pErasing)
 {
-	 std::map<int, AcDbObjectId>::iterator it = NODEATTAGMAP.find(m_tag);
+	 auto it = NODEATTAGMAP.find(m_tag);
 	 if (it != NODEATTAGMAP.end())
 	 {
 		  NODEATTAGMAP.erase(it);
+	 }
+	 auto it2 = NODEATCRDSMAP.find(m_crds);
+	 if (it2 != NODEATCRDSMAP.end() && it2->second == m_tag)
+	 {
+		 NODEATCRDSMAP.erase(it2);
 	 }
 
 	 return AcDbEntity::subErase(pErasing);
@@ -299,7 +300,7 @@ void CSSNode::setDeformationAt(int dof, double value)
 		m_translation.y = value;
 		break;
 	case 3:
-		if (ObjUtils::getNdm() == 3)
+		if (DOCDATA->getNdm() == 3)
 			m_translation.z = value;
 		else
 			m_rotation.z = value;
@@ -322,10 +323,10 @@ void CSSNode::initialize()
 {
 	if (pUndeformedCube == NULL)
 	{
-		double& ndSz = DISPOPTIONS.nodeSize;
+		double ndSz = DISPOPTIONS.nodeSize;
 		pUndeformedCube = new CSSCube(m_crds, ndSz);
 		pDeformedCube = new CSSCube(pUndeformedCube);
-		pDeformedCube->setColorIndex(DOCDATA.nodeDfrmdColor);
+		pDeformedCube->setColorIndex(nodeDfrmdColor);
 	} else
 	{
 		pUndeformedCube->setSize(DISPOPTIONS.nodeSize);

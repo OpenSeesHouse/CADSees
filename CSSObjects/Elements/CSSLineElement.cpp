@@ -57,13 +57,14 @@ Adesk::Boolean CSSLineElement::subWorldDraw (AcGiWorldDraw *mode) {
 	assertReadEnabled () ;
 	if (DISPOPTIONS.dispEleTags)
 	{
-		AcGeVector3d vec(m_crds[1]-m_crds[0]);
-		AcGeVector3d normal = ObjUtils::getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
+		AcGePoint3d crd = m_crds[0];
+		double l = vec.length();
+		AcGeVector3d normal = DOCDATA->getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 		AcGeVector3d up = vec.perpVector();
-		m_crds[0] += 0.5*vec + 0.03*vec.length()*up;
+		crd += 0.5*(l- DISPOPTIONS.tagSize)*vec.normal() + 0.03*vec.length()*up;
 		AcString tagStr;
 		tagStr.format(_T("%d"), m_tag);
-		mode->geometry().text(m_crds[0], normal, AcGeVector3d(1, 0, 0), DISPOPTIONS.tagSize, 1., 0, tagStr.kACharPtr());
+		mode->geometry().text(crd, normal, AcGeVector3d(1, 0, 0), DISPOPTIONS.tagSize, 1., 0, tagStr.kACharPtr());
 	}
 	return (CSSElement::subWorldDraw (mode)) ;
 }

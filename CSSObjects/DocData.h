@@ -29,41 +29,31 @@
 //-----------------------------------------------------------------------------
 //----- Here you can store the document / database related data.
 #define WEBADDRESS _T("www.OpenSeesHouse.com")
-struct  comp {
-	bool operator () (const AcGePoint3d& a, const AcGePoint3d& b) const {
-		return a.asVector().length() < b.asVector().length();
-	}
-};
-struct DispOptions
-{
-	bool dispNodeTags;
-	bool dispEleTags;
-	bool dispDeformedShape;
-	bool dispUndeformedWire;
-	double nodeSize;
-	double tagSize;
-	bool nodeSizeChanged;
-};
+#include "CSSDocData.h"
+class CSSDocData;
 class CDocData {
-
-	//----- TODO: here you can add your variables
-
 public:
 	CDocData () ;
 	CDocData (const CDocData &data) ;
+	CSSDocData* getData();
 	~CDocData () ;
-
-	DispOptions dispOptions;
-	int NDM;
-	int NDOF;
-	Adesk::UInt32 wireColor;
-	Adesk::UInt32 elementColor;
-	Adesk::UInt32 nodeColor;
-	Adesk::UInt32 eleDfrmdColor;
-	Adesk::UInt32 nodeDfrmdColor;
-	AcDbObjectId btrId;
+	CSSDocData* pData;
+	inline std::map<int, AcDbObjectId>& getNodeAtTagMap() {
+		return nodeAtTagMap;
+	}
+	inline std::multimap<AcGePoint3d, int, comp>& getNodeAtCrdsMap() {
+		return nodeAtCrdsMap;
+	}
+	inline std::map<int, AcDbObjectId>& getElemAtTagMap() {
+		return elemAtTagMap;
+	}
+	CSSDocData::DispOptions getDispOptions();
+	AcDbObjectId& getBtrId() {
+		return btrId;
+	};
 	std::multimap<AcGePoint3d, int, comp> nodeAtCrdsMap;
 	std::map<int, AcDbObjectId> nodeAtTagMap;
 	std::map<int, AcDbObjectId> elemAtTagMap;
+	AcDbObjectId btrId;
 
 } ;

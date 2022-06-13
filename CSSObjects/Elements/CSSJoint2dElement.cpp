@@ -59,24 +59,24 @@ Adesk::Boolean CSSJoint2dElement::subWorldDraw(AcGiWorldDraw* mode) {
 	assertReadEnabled();
 	const Adesk::UInt32 faceListLength = 4;
 	static const Adesk::Int32 faceList[] = { 4, 0, 1, 2, 3 };
-	//pDeformedEntity->setColorIndex(DOCDATA.eleDfrmdColor);
+	//pDeformedEntity->setColorIndex(DOCDATA->eleDfrmdColor);
 	AcGiFaceData faceData;
 	AcGiEdgeData edgeData;
 	short colors[1];
 	short edgeColors[4];
 	if (ObjUtils::getShowDeformed())
 	{
-		colors[0] = DOCDATA.eleDfrmdColor;
+		colors[0] = eleDfrmdColor;
 		for (int i = 0; i < 4; i++)
-			edgeColors[i] = DOCDATA.eleDfrmdColor;
+			edgeColors[i] = eleDfrmdColor;
 		faceData.setColors(colors);
 		edgeData.setColors(edgeColors);
 		mode->geometry().shell(4, dfrmdVrtxList, faceListLength, faceList, &edgeData, &faceData);
 		if (DISPOPTIONS.dispUndeformedWire)
 		{
-			//colors[0] = DOCDATA.wireColor;
+			//colors[0] = DOCDATA->wireColor;
 			for (int i = 0; i < 4; i++)
-				edgeColors[i] = DOCDATA.wireColor;
+				edgeColors[i] = wireColor;
 			faceData.setColors(colors);
 			edgeData.setColors(edgeColors);
 			mode->geometry().shell(4, vrtxList, faceListLength, faceList, &edgeData, &faceData);
@@ -84,9 +84,9 @@ Adesk::Boolean CSSJoint2dElement::subWorldDraw(AcGiWorldDraw* mode) {
 	}
 	else
 	{
-		colors[0] = DOCDATA.wireColor;
+		colors[0] = wireColor;
 		for (int i = 0; i < 4; i++)
-			edgeColors[i] = DOCDATA.wireColor;
+			edgeColors[i] = wireColor;
 		faceData.setColors(colors);
 		edgeData.setColors(edgeColors);
 		mode->geometry().shell(4, vrtxList, faceListLength, faceList, &edgeData, &faceData);

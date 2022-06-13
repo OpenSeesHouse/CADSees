@@ -32,18 +32,11 @@ AcApDataManager<CDocData> DocVars ;
 //-----------------------------------------------------------------------------
 //----- Implementation of the document data class.
 CDocData::CDocData () {
-	inputFile = "";
+	//pData = new CSSDocData();
+	pDocReactor = NULL;
+	pData = NULL;
 	lengthUnit = LengthUnit::m;
 	lengthFac = 1.0;
-	dispOptions.dispNodeTags = false;
-	dispOptions.dispEleTags = false;
-	dispOptions.dispDeformedShape = false;
-	dispOptions.dispUndeformedWire = true;
-	dispOptions.defTagSize = 0.15;		 //in m
-	dispOptions.tagSize = 0.15;
-	dispOptions.defNodeSize = 0.05;		 //in m
-	dispOptions.nodeSize = 0.05;
-	btrId = NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -53,4 +46,46 @@ CDocData::CDocData (const CDocData &data) {
 
 //-----------------------------------------------------------------------------
 CDocData::~CDocData () {
+}
+
+CSSDocData* CDocData::getData()
+{
+	if (pData != NULL)
+		return pData;
+	ErrorStatus es;
+	AcDbObjectId dataId;
+	AcDbDictionary* pNamedObj;
+	AcDbDictionary* pDict;
+	AcDbDatabase* pDb = acdbHostApplicationServices()->workingDatabase();
+	if (pDb == NULL)
+		return NULL;
+	es = pDb->getNamedObjectsDictionary(pNamedObj, AcDb::kForRead);
+	es = pNamedObj->getAt(_T("CSSData"), (AcDbObject*&)pDict, AcDb::kForRead);
+	if (es == eOk)
+	{
+		es = pDict->getAt(_T("settings"), dataId);
+		if (es == eOk)
+		{
+			es = acdbOpenObject(pData, dataId, kForRead);
+			if (es != eOk)
+				acutPrintf(_T("CSSDocData::error opening object\n"));
+		}
+	}
+	if (pData == NULL)
+	{
+		pDict = new AcDbDictionary;
+		AcDbObjectId DictId;
+		es = pNamedObj->upgradeOpen();
+		es = pNamedObj->setAt(_T("CSSData"), pDict, DictId);
+		pData = new CSSDocData();
+		es = pDict->setAt(_T("settings"), pData, dataId);
+
+	}
+	pDict->close();
+	pNamedObj->close();
+	pData->setDataId(dataId);
+	pData->close();
+	inputFile = "";
+	ObjUtils::setDocData(pData);
+	return pData;
 }

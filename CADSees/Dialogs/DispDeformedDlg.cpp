@@ -54,7 +54,7 @@ BOOL DispDeformedDlg::OnInitDialog()
 	m_stepSpin.SetRange(1, m_numSteps+1);
 	if (m_numSteps == 0)
 	{
-		DISPOPTIONS.dispDeformedShape = false;
+		DOCDATA->dispDeformedShape(false, false);
 		m_dispDeformedCheck.SetCheck(0);
 		m_dispDeformedCheck.EnableWindow(FALSE);
 		m_stepSlider.EnableWindow(FALSE);
@@ -62,7 +62,6 @@ BOOL DispDeformedDlg::OnInitDialog()
 	}
 	else
 	{
-		DISPOPTIONS.dispDeformedShape = true;
 		m_dispDeformedCheck.SetCheck(1);		
 		m_stepSlider.SetPos(1);
 		m_stepSpin.SetPos(1);
@@ -141,25 +140,10 @@ void DispDeformedDlg::OnBnClickedDispDeformedCheck()
 	if (!m_initiated)
 		return;
 	UpdateData(TRUE);
-	bool showDfrmd;
-	if (m_dispDeformed == 0)
-	{
-		DISPOPTIONS.dispDeformedShape = false;
-		showDfrmd = false;
-		//m_dispDeformedCheck.EnableWindow(FALSE);
-		m_stepSlider.EnableWindow(FALSE);
-		m_stepSpin.EnableWindow(FALSE);
-	}
-	else
-	{
-		DISPOPTIONS.dispDeformedShape = true;
-		showDfrmd = true;
-		//m_dispDeformedCheck.EnableWindow(TRUE);
-		m_stepSlider.EnableWindow(TRUE);
-		m_stepSpin.EnableWindow(TRUE);		
-	}
-	ObjUtils::setShowDeformed(showDfrmd);
-	ObjUtils::RedrawGraphics(false);
+	bool showDfrmd = (bool)m_dispDeformed;
+	DOCDATA->dispDeformedShape(showDfrmd, true);
+	m_stepSlider.EnableWindow(m_dispDeformed);
+	m_stepSpin.EnableWindow(m_dispDeformed);
 	acedUpdateDisplay();
 }
 
@@ -172,17 +156,21 @@ void DispDeformedDlg::OnBnClickedDispWireCheck()
 	bool showDfrmd;
 	if (m_dispWire == 0)
 	{
-		DISPOPTIONS.dispUndeformedWire = false;
+		DOCDATA->dispUndeformedWire(false);
 		showDfrmd = false;
 		//m_dispWireCheck.EnableWindow(FALSE);
 	}
 	else
 	{
-		DISPOPTIONS.dispUndeformedWire = true;
+		DOCDATA->dispUndeformedWire(true);
 		showDfrmd = true;
 		//m_dispWireCheck.EnableWindow(TRUE);
 	}
-	ObjUtils::setShowUndeformedWire(showDfrmd);
-	ObjUtils::RedrawGraphics(false);
 	acedUpdateDisplay();
+}
+
+void DispDeformedDlg::OnCancel()
+{
+	DOCDATA->save();
+	CAcUiDialog::OnCancel();
 }
