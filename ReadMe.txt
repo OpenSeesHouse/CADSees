@@ -53,3 +53,15 @@ Change Log:
 -Updated projects settings for debugging. The CSSLoader.dll will not work by the new settings. We should load the .dbx and 
  .arx files in sucess using arx->load command or by putting them inside the startup suit (from: manage->Applications->
  load application->contents (below the bag icon in bottom side of the window))
+
+2022/06/13 (1401/03/23)
+"importOPS" command now also accepts ".tcl" files
+To successfully identify model size and the appropriate node and tag sizes, new "units" input was considered to be read from
+ the ".ops/.tcl" file. To use this, add the "#units m" (where "m" can be replaced by cm/mm/ft/in) manually to the ".ops/.tcl"
+ file to be read by CADSees. Alternatively, use the new logCommand option below (use the latest OpenSees-CSS from the related Git 
+ repository):
+ logCommands -comment "#units m\n"
+The mechanism used for storing the model settings and writing/reading them upon save/close was totally evolved to fully support
+ model presentation upon these commands.
+Support for new 3d quadrilateral elements (see CSSObjects/Elements/CSSElement.h for a list) and "twoNodeLink" element was added
+The new build file was attched as a .rar archive. Please download it and use it instead of "test-ouputs.rar" previously described.
