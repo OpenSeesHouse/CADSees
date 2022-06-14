@@ -140,12 +140,11 @@ void CSSDocData::dispNodeTags(bool val) {
 }
 
 void CSSDocData::dispDeformedShape(bool val, bool apply) {
-	if (val == dispOptions.dispDeformedShape)
-		return;
-	changed = true;
+	if (val != dispOptions.dispDeformedShape)
+		changed = true;
 	dispOptions.dispDeformedShape = val;
 	if (apply)
-		ObjUtils::RedrawGraphics(false);
+		ObjUtils::RedrawGraphics(true);
 }
 
 void CSSDocData::dispUndeformedWire(bool val) {
