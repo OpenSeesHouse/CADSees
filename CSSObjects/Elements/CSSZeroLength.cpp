@@ -48,65 +48,56 @@ CSSZeroLength::CSSZeroLength () : CSSElement () {
 CSSZeroLength::CSSZeroLength(int tag, std::vector<int> nodeTags): CSSElement (tag, nodeTags, "zeroLength")
 {
 	pVertList = 0;
-	initiatePnts(false);
 }
 
 CSSZeroLength::~CSSZeroLength () {
 	if (pVertList != 0)
 		delete[] pVertList;
+	pVertList = 0;
 }
 
 
 //-----------------------------------------------------------------------------
 //----- CSSElement protocols
 Adesk::Boolean CSSZeroLength::subWorldDraw (AcGiWorldDraw *mode) {
-	assertReadEnabled () ;
-	mode->geometry().polygon(4, pVertList);
+	assertReadEnabled ();
+	if (pVertList != 0)
+		mode->geometry().polygon(4, pVertList);
 	return (CSSElement::subWorldDraw (mode)) ;
 }
 
 
 
-void CSSZeroLength::updateDeformedGeometry()
+bool CSSZeroLength::updateGeometry(bool useDeformedGeom)
 {
-	assertWriteEnabled(false, true);
-	if (!initiatePnts(true))
-	{
-		m_isNull = true;
-	}
-}
-
-bool CSSZeroLength::initiatePnts(bool useDeformedGeom)
-{
-	assertWriteEnabled(false, true);
-	AcDbObjectId id;
-	AcGePoint3d crds1, crds2;
+	CSSElement::updateGeometry(useDeformedGeom);
 	if (useDeformedGeom)
 	{
 		m_crds[0] = m_nodePtrs[0]->getDeformedCrds();
 		m_crds[1] = m_nodePtrs[1]->getDeformedCrds();
-	} else
+	}
+	else
 	{
 		m_crds[0] = m_nodePtrs[0]->getCrds();
 		m_crds[1] = m_nodePtrs[1]->getCrds();
 	}
+	AcGePoint3d crds1 = m_crds[0], crds2 = m_crds[1];
 	m_nodePtrs[0]->close();
 	m_nodePtrs[1]->close();
 	AcGeVector3d vec(m_crds[1] - m_crds[0]);
 	if (vec.length() < 1.e-5)
-		vec.set(1,0,0);
-	double Ln = vec.length()*ZLHTOLRAT;
+		vec.set(1, 0, 0);
+	double Ln = vec.length() * ZLHTOLRAT;
 	AcGeVector3d normal = DOCDATA->getNdm() == 2 ? AcGeVector3d(0, 0, 1) : AcGeVector3d(0, -1, 0);
 	normal = -vec.crossProduct(normal);
 	normal.normalize();
-	int i =  0;
 	if (pVertList == 0)
 		pVertList = new AcGePoint3d[4];
-	pVertList[i++] = crds1;
-	crds1 += 0.5*vec + 0.5*Ln*normal;
-	pVertList[i++] = crds1;
+	pVertList[0] = crds1;
+	crds1 += 0.5 * vec + 0.5 * Ln * normal;
+	pVertList[1] = crds1;
 	crds1 -= normal;
-	pVertList[i++] = crds1;
-	pVertList[i] = crds2;
+	pVertList[2] = crds1;
+	pVertList[3] = crds2;
 	return true;
 }

@@ -65,9 +65,8 @@ protected:
 	virtual Adesk::Boolean subWorldDraw (AcGiWorldDraw *mode) ;
 protected:
 	AcGePoint3d *pVertList;
-	bool initiatePnts(bool useDeformedGeom);
 public:
-	virtual void updateDeformedGeometry();
+	virtual bool updateGeometry(bool useDeformedGeom);
 } ;
 
 #ifdef CADSEESOBJECTS_MODULE

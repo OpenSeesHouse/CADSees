@@ -186,6 +186,7 @@ int CSSElement::getIsNull() const
 
 bool CSSElement::updateGeometry(bool useDeformedGeom)
 {
+	assertWriteEnabled(false, true);
 	AcDbObjectId id;
 	int i = 0;
 	ErrorStatus es;
