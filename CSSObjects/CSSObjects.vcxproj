@@ -55,11 +55,11 @@
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>C:\Program Files\CADSees\Objects</IntDir>
-    <OutDir>C:\Program Files\CADSees\Objects</OutDir>
+    <IntDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\Objects</IntDir>
+    <OutDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\Objects</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>C:\Program Files\CADSees</OutDir>
+    <OutDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees</OutDir>
     <IntDir>../CSSObjects/x64/Release</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
@@ -78,7 +78,7 @@
     <Link>
     </Link>
     <Link>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CADSees\Objects\$(TargetName)$(TargetExt)</OutputFile>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\Objects\$(TargetName)$(TargetExt)</OutputFile>
       <GenerateDebugInformation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
@@ -92,6 +92,7 @@
     <ClCompile Include="CSSObjects.cpp" />
     <ClCompile Include="Cube\CSSCube.cpp" />
     <ClCompile Include="DocData.cpp" />
+    <ClCompile Include="Elements\beamWithHinges.cpp" />
     <ClCompile Include="Elements\CSSBrickElement.cpp" />
     <ClCompile Include="Elements\CSSBeamElement.cpp" />
     <ClCompile Include="Elements\CSSCorotTruss.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="CSSDocData.h" />
     <ClInclude Include="Cube\CSSCube.h" />
     <ClInclude Include="DocData.h" />
+    <ClInclude Include="Elements\beamWithHinges.h" />
     <ClInclude Include="Elements\CSSBrickElement.h" />
     <ClInclude Include="Elements\CSSBeamElement.h" />
     <ClInclude Include="Elements\CSSCorotTruss.h" />

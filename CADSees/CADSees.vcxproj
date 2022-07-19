@@ -52,11 +52,11 @@
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>C:\Program Files\CADSees\</IntDir>
-    <OutDir>C:\Program Files\CADSees\</OutDir>
+    <IntDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\</IntDir>
+    <OutDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>C:\Program Files\CADSees</OutDir>
+    <OutDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -66,7 +66,7 @@
       <AdditionalOptions>/Wv:17.00.61030 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\boost_1_73_0;..\CSSObjects;../CSSObjects;$(ArxSdkDir)\inc;$(ArxSdkDir)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\boost_1_73_0;..\CSSObjects;$(ArxSdkDir)\inc;$(ArxSdkDir)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\boost_1_73_0;..\CSSObjects;$(ArxSdkDir)\inc;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</TreatWarningAsError>
       <TreatWarningAsError Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</TreatWarningAsError>
@@ -75,8 +75,8 @@
     </Link>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CSSObjects.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CADSees\Objects;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\CADSees\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\Objects;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CSSObjects.lib;%(AdditionalDependencies)</AdditionalDependencies>

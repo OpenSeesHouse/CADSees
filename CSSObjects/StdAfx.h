@@ -61,6 +61,7 @@ extern AcApDataManager<CDocData> DocVars ;
 #include "Elements/CSSElasticBeamColumn.h"
 #include "Elements/CSSTwoNodeLink.h"
 #include "Elements/CSSForceBeamColumn.h"
+#include "Elements/beamWithHinges.h"
 #include "Elements/CSSDispBeamColumn.h"
 #include "Elements/CSSModElasticBeamColumn.h"
 #include "Elements/CSSZeroLength.h"

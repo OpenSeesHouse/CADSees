@@ -216,6 +216,11 @@ void ObjUtils::addElement(std::string type, int tag, std::vector<int> nodeTags, 
 		pEle = new CSSForceBeamColumn(tag, nodeTags);
 
 	}
+	else if (type.compare("beamWithHinges") == 0 )
+	{
+		pEle = new CSSbeamWithHinges(tag, nodeTags);
+
+	}
 	else if (type.compare("zeroLength") == 0)
 	{
 		pEle = new CSSZeroLength(tag, nodeTags);

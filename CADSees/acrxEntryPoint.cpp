@@ -143,7 +143,8 @@ public:
 		double maxEleLength = 0;
 		while (getline(from, line, '\n'))
 		{
-			if (line.size() == 0) continue;
+			if (line.size() == 0 || line.find_first_not_of(' ') == std::string::npos)
+				continue;
 			std::vector<std::string> words = ObjUtils::pars(line, " ");
 			if (words[0].compare("#Units") == 0 || words[0].compare("#units") == 0)
 			{

@@ -63,6 +63,7 @@ public:
 		res.push_back("twoNodeLink");
 		res.push_back("dispBeamColumn");
 		res.push_back("forceBeamColumn");
+		res.push_back("beamWithHinges");
 		res.push_back("nonlinearBeamColumn");
 		res.push_back("zeroLength");
 		res.push_back("ModElasticBeam2d");
@@ -75,6 +76,7 @@ public:
 		res.push_back("bbarBrick");
 		res.push_back("bbarBrickUP");
 
+		eleNumNodes.push_back(2);
 		eleNumNodes.push_back(2);
 		eleNumNodes.push_back(2);
 		eleNumNodes.push_back(2);

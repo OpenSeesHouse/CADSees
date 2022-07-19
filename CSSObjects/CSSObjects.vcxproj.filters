@@ -114,6 +114,9 @@
     <ClCompile Include="CSSDocData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\beamWithHinges.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="StdAfx.h">
@@ -190,6 +193,9 @@
     </ClInclude>
     <ClInclude Include="CSSDocData.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\beamWithHinges.h">
+      <Filter>Elements</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
