@@ -52,11 +52,11 @@
   </PropertyGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\</IntDir>
-    <OutDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\</OutDir>
+    <IntDir>C:\Users\Alireza\AppData\Roaming\OpenSees House\OpenSeesH\CADSees\</IntDir>
+    <OutDir>C:\Users\Alireza\AppData\Roaming\OpenSees House\OpenSeesH\CADSees\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\</OutDir>
+    <OutDir>x64/release</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
@@ -75,8 +75,8 @@
     </Link>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CSSObjects.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\Objects;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\SA Jalali\AppData\Local\Programs\OpenSeesH\CADSees\$(TargetName)$(TargetExt)</OutputFile>
+      <AdditionalLibraryDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Alireza\AppData\Roaming\OpenSees House\OpenSeesH\CADSees\Objects;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\Alireza\AppData\Roaming\OpenSees House\OpenSeesH\CADSees\$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <Link>
       <AdditionalDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CSSObjects.lib;%(AdditionalDependencies)</AdditionalDependencies>

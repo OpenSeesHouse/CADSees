@@ -88,6 +88,7 @@ Acad::ErrorStatus CSSNodeRecorder::dwgInFields (AcDbDwgFiler *pFiler) {
 
 bool CSSNodeRecorder::applySelf(double t, double fac)
 {
+	assertReadEnabled();
 	int i = 0;
 	int timeSize = timeVec.Size();
 	if (t == -1)

@@ -150,7 +150,7 @@ void addRecorder(std::vector<std::string> line)
 		bool hasTime = false;
 		std::vector<int> tagList;
 		std::vector<int> dofList;
-		for (int i = 2; i < line.size(); i++)
+		for (int i = 2; i < line.size()-1; i++)
 		{
 			if (line[i].compare("-file") == 0)
 			{

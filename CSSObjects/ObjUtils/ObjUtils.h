@@ -43,7 +43,7 @@
 //----- going away.
 #define DLLIMPEXP
 #endif
-#include <vector>
+//#include <vector>
 
 //-----------------------------------------------------------------------------
 class CSSNode;

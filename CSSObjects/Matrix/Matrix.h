@@ -1,4 +1,9 @@
 #pragma once
+#ifdef CADSEESOBJECTS_MODULE
+#define DLLIMPEXP __declspec(dllexport)
+#else
+#define DLLIMPEXP
+#endif
 #include "Vector.h"
 class Matrix
 {

@@ -1,8 +1,15 @@
 #pragma once
-class Vector
+#ifdef CADSEESOBJECTS_MODULE
+#define DLLIMPEXP __declspec(dllexport)
+#else
+#define DLLIMPEXP
+#endif
+
+class DLLIMPEXP Vector
 {
 public:
 	Vector();
+	~Vector();
 	Vector(int n);
 	Vector(double* d, int n);
 	int Size() const {

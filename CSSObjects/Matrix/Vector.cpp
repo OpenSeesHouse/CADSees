@@ -15,6 +15,16 @@ Vector::Vector(int n)
 	data = new double[n];
 }
 
+Vector::~Vector()
+{
+	size = 0;
+	if (!fromData && data != 0)
+	{
+		delete[] data;
+	}
+
+}
+
 Vector::Vector(double* d, int n)
 {
 	fromData = true;
